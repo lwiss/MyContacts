@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BenMycontacts.iml" filepath="$PROJECT_DIR$/BenMycontacts.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/benmycontacts.iml" filepath="$PROJECT_DIR$/benmycontacts.iml" />
       <module fileurl="file://$PROJECT_DIR$/javax.ws.rs-api-2.0-sources/javax.ws.rs-api-2.0-sources.iml" filepath="$PROJECT_DIR$/javax.ws.rs-api-2.0-sources/javax.ws.rs-api-2.0-sources.iml" />
       <module fileurl="file://$PROJECT_DIR$/jsr311-api-1.1.1/jsr311-api-1.1.1.iml" filepath="$PROJECT_DIR$/jsr311-api-1.1.1/jsr311-api-1.1.1.iml" />
     </modules>
