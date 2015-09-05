@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 /**
@@ -18,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG_DEBUG = "MAIN ACTIVITY";
 
+    // Shared prefrerence used to set and delete the authentication token.
+    private SharedPreferences setting ;
+
     /**
      * Load principle view otherwise lunch LoginActivity if user logged out.
      * @param savedInstanceState
@@ -28,11 +32,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Check if a token already exists. if not lunch the loginActivity.
-        SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
         String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
 
-        Log.d(TAG_DEBUG,"Token saved in nshared pref: "+ token) ;
+        Log.d(TAG_DEBUG,"Token saved in shared pref: "+ token) ;
         if (token==null) {
             Intent intent = new Intent(this,
                     LoginActivity.class);
@@ -43,25 +47,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+
+    public void displayActivities(View view) {
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    public void displayContacts(View view) {
+    }
 
-        return super.onOptionsItemSelected(item);
+
+    public void logout(View view) {
+
+        // Get shared preference preference
+        SharedPreferences.Editor editor = setting.edit();
+
+        // Delete the authentication token from shared preference
+        editor.remove(getString(R.string.token_key)) ;
+        editor.commit() ;
+
+        // Lunch login activity
+        Intent intent = new Intent(this,
+                LoginActivity.class);
+        startActivity(intent);
+
     }
 }

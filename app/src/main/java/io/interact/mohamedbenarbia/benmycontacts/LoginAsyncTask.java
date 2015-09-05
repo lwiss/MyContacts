@@ -1,5 +1,6 @@
 package io.interact.mohamedbenarbia.benmycontacts;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -52,6 +53,12 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
     /**
+     *  Progress dialog to show while logging in
+     */
+
+    private ProgressDialog progressDialog ;
+
+    /**
      * Email and password used for authentication
      */
     private String email;
@@ -65,6 +72,20 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
         this.email = email;
         this.password = password;
         this.context = context;
+
+    }
+
+
+    /**
+     * Show a progress dialog with a spinner while logging in
+     */
+    @Override
+    protected void onPreExecute () {
+
+        progressDialog = new ProgressDialog(this.context);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage(context.getText(R.string.logging_in_message));
+        progressDialog.show();
 
     }
 
@@ -207,6 +228,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer result) {
+
+        // Dismiss progress dialog
+        progressDialog.dismiss();
 
         Log.d(TAG_DEBUG, "argumennt in OnpostExecute" + result);
 
