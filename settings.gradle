@@ -1,1 +1,1 @@
-include ':app', ':javax.ws.rs-api-2.0-sources', ':jsr311-api-1.1.1'
+include ':app'

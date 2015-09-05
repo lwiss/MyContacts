@@ -19,8 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG_DEBUG = "MAIN ACTIVITY";
 
-    // Shared prefrerence used to set and delete the authentication token.
-    private SharedPreferences setting ;
+
 
     /**
      * Load principle view otherwise lunch LoginActivity if user logged out.
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Check if a token already exists. if not lunch the loginActivity.
-        setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
         String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
 
@@ -49,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     public void displayActivities(View view) {
+
+
     }
 
 
@@ -59,17 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void logout(View view) {
 
-        // Get shared preference preference
-        SharedPreferences.Editor editor = setting.edit();
-
-        // Delete the authentication token from shared preference
-        editor.remove(getString(R.string.token_key)) ;
-        editor.commit() ;
-
-        // Lunch login activity
-        Intent intent = new Intent(this,
-                LoginActivity.class);
-        startActivity(intent);
+        LogOutAsyncTask logOutAsyncTask = new LogOutAsyncTask(this);
+        logOutAsyncTask.execute();
 
     }
 }
