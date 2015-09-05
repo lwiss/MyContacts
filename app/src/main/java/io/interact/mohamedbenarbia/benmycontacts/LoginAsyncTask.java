@@ -1,5 +1,6 @@
 package io.interact.mohamedbenarbia.benmycontacts;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -10,7 +11,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
@@ -25,22 +25,8 @@ import java.io.UnsupportedEncodingException;
  */
 public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
+    // Tag used for debugging.
     private static final String TAG_DEBUG = "SERVER RESPONSE LOGIN";
-
-
-    // Define code states sent by Server
-    private static final int SUCCESS_RESPONSE = 200;
-    private static final int NOT_FOUND__RESPONSE = 404;
-    private static final int UNAUTHORIZED__RESPONSE = 401;
-
-    // Used if an internal error occured during  login (i.e JSON exception)
-    private static final int INTERNAL_ERROR = 100;
-
-    // Used if the user is not found
-    private static final int USER_NOT_FOUND = 301;
-
-    // Used if the pass word is incorrect
-    private static final int INCORRECT_PASSWORD = 302;
 
 
     // Authentication Server URL
@@ -50,6 +36,12 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
     private static final String USER_NOT_FOUND_MESSAGE = "login.user.not_found";
     private static final String INCORRECT_PASSWORD_MESSAGE = "login.user.invalid_password";
 
+
+    /**
+     *  Progress dialog to show while logging in
+     */
+
+    private ProgressDialog progressDialog ;
 
     /**
      * Email and password used for authentication
@@ -65,6 +57,20 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
         this.email = email;
         this.password = password;
         this.context = context;
+        progressDialog = new ProgressDialog(this.context);
+
+
+    }
+
+
+    /**
+     * Show a progress dialog with a spinner while logging in
+     */
+    @Override
+    protected void onPreExecute () {
+
+        progressDialog.setMessage(context.getText(R.string.logging_in_message));
+        progressDialog.show();
 
     }
 
@@ -83,7 +89,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
         // Save the token to shared preferences if successful connection
-        if(statusLogin== SUCCESS_RESPONSE) {
+        if(statusLogin== StatusCodes.OK_RESPONSE) {
             String resBody = null ;
             try {
                 resBody = EntityUtils.toString(response.getEntity());
@@ -121,7 +127,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
     private HttpResponse postLoginDataToServer() {
         HttpResponse response = null;
 
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientFactory.getInstance() ;
         HttpPost postRequest = new HttpPost(AUTHENTICATION_SERVER_URL);
 
         JSONObject postRequestBody = new JSONObject();
@@ -167,7 +173,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
         // Return internal error status by default (if response null or an exception occurred) ;
-        int statusLogin = INTERNAL_ERROR;
+        int statusLogin = StatusCodes.INTERNAL_ERROR;
 
         if (response != null) {
             // Get status code response
@@ -179,7 +185,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
             // Determine if it's an undefined user or a wrong password
-            if (statusLogin == UNAUTHORIZED__RESPONSE) {
+            if (statusLogin == StatusCodes.UNAUTHORIZED__RESPONSE) {
 
                 String resBody = null;
                 try {
@@ -190,9 +196,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
                     Log.d(TAG_DEBUG, "Replied with entity " + message);
 
                     // Put corresponding status with respect to the received message
-                    if (message.equals(USER_NOT_FOUND_MESSAGE)) statusLogin = USER_NOT_FOUND;
+                    if (message.equals(USER_NOT_FOUND_MESSAGE)) statusLogin = StatusCodes.USER_NOT_FOUND;
                     else if (message.equals(INCORRECT_PASSWORD_MESSAGE))
-                        statusLogin = INCORRECT_PASSWORD;
+                        statusLogin = StatusCodes.INCORRECT_PASSWORD;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -208,32 +214,35 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
     @Override
     protected void onPostExecute(Integer result) {
 
+        // Dismiss progress dialog
+        progressDialog.dismiss();
+
         Log.d(TAG_DEBUG, "argumennt in OnpostExecute" + result);
 
         switch (result) {
-            case INTERNAL_ERROR: {
+            case StatusCodes.INTERNAL_ERROR: {
                 Toast.makeText(context, context.getText(R.string.internal_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
-            case SUCCESS_RESPONSE: {
+            case StatusCodes.OK_RESPONSE: {
                 Toast.makeText(context, context.getText(R.string.login_success_message), Toast.LENGTH_LONG).show();
                 // In case of successful log in: dismiss login activity
                 ((LoginActivity)context).finish();
                 break ;
 
             }
-            case USER_NOT_FOUND: {
+            case StatusCodes.USER_NOT_FOUND: {
                 Toast.makeText(context, context.getText(R.string.user_not_found_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
-            case INCORRECT_PASSWORD: {
+            case StatusCodes.INCORRECT_PASSWORD: {
                 Toast.makeText(context, context.getText(R.string.incorrect_password_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
-            case NOT_FOUND__RESPONSE: {
+            case StatusCodes.NOT_FOUND__RESPONSE: {
                 Toast.makeText(context, context.getText(R.string.not_found_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
