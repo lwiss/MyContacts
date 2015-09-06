@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import io.interact.mohamedbenarbia.benmycontacts.Util.ApplicationGlobals;
+import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtilities;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 /**
  * AsyncTask used to perform communication with the server to authenticate.
@@ -28,19 +31,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
     // Tag used for debugging.
     private static final String TAG_DEBUG = "SERVER RESPONSE LOGIN";
 
-
-    // Authentication Server URL
-    private static final String AUTHENTICATION_SERVER_URL = "https://api.mycontacts.io/v2/login";
-
-    // User not found messgae
-    private static final String USER_NOT_FOUND_MESSAGE = "login.user.not_found";
-    private static final String INCORRECT_PASSWORD_MESSAGE = "login.user.invalid_password";
-
-
     /**
      *  Progress dialog to show while logging in
      */
-
     private ProgressDialog progressDialog ;
 
     /**
@@ -82,14 +75,24 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
      */
     @Override
     protected Integer doInBackground(Void... params) {
-
+        //generate the request body
+        JSONObject reqBody = null;
+        try {
+           reqBody = this.loginBody();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // generate the headers
+        HashMap<String,String> headers = new HashMap<>();
+        headers.put(HTTP.CONTENT_TYPE, "application/json");
+        // generate the url for the login service
+        String url=ApplicationGlobals.BASE_URL+ApplicationGlobals.LOGIN_URI;
         // Post data to server and get Response
-        HttpResponse response = postLoginDataToServer();
+        HttpResponse response = NetworkUtilities.postMethod(url,headers,reqBody);
+
         int statusLogin = getStatus(response);
-
-
         // Save the token to shared preferences if successful connection
-        if(statusLogin== StatusCodes.OK_RESPONSE) {
+        if(statusLogin== ApplicationGlobals.OK_RESPONSE) {
             String resBody = null ;
             try {
                 resBody = EntityUtils.toString(response.getEntity());
@@ -120,48 +123,20 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
     /**
-     * Post the email and password to the server
-     *
-     * @return the http respsonse of the server. If an internal error occurs return null ;
+     * generates the request body for the login
+     * @return JsonObject that encapsulates the body of the request
      */
-    private HttpResponse postLoginDataToServer() {
-        HttpResponse response = null;
 
-        HttpClient client = HttpClientFactory.getInstance() ;
-        HttpPost postRequest = new HttpPost(AUTHENTICATION_SERVER_URL);
+    private JSONObject loginBody() throws JSONException {
+        JSONObject rBody = new JSONObject();
+        rBody.put("username", this.email);
+        rBody.put("password", this.password);
+        rBody.put("client", "Apriary");
 
-        JSONObject postRequestBody = new JSONObject();
-
-        // String entity to send to the server that contains JSonObject
-        StringEntity stringEntity = null;
-
-        // Form the Json object to send to the server
-        try {
-
-            // Form the body of the postRequest
-            postRequestBody.put("username", this.email);
-            postRequestBody.put("password", this.password);
-            postRequestBody.put("client", "Apriary");
-
-            stringEntity = new StringEntity(postRequestBody.toString());
-
-            postRequest.setEntity(stringEntity);
-            postRequest.setHeader(HTTP.CONTENT_TYPE, "application/json");
-
-            response = client.execute(postRequest);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        return response;
+        return rBody;
     }
+
+
 
     /**
      * Return the corresponding status depending on the received response from the server. Sould return one of the status defined in the class above.
@@ -173,7 +148,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
         // Return internal error status by default (if response null or an exception occurred) ;
-        int statusLogin = StatusCodes.INTERNAL_ERROR;
+        int statusLogin = ApplicationGlobals.INTERNAL_ERROR;
 
         if (response != null) {
             // Get status code response
@@ -185,7 +160,7 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
             // Determine if it's an undefined user or a wrong password
-            if (statusLogin == StatusCodes.UNAUTHORIZED__RESPONSE) {
+            if (statusLogin == ApplicationGlobals.UNAUTHORIZED__RESPONSE) {
 
                 String resBody = null;
                 try {
@@ -196,9 +171,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
                     Log.d(TAG_DEBUG, "Replied with entity " + message);
 
                     // Put corresponding status with respect to the received message
-                    if (message.equals(USER_NOT_FOUND_MESSAGE)) statusLogin = StatusCodes.USER_NOT_FOUND;
-                    else if (message.equals(INCORRECT_PASSWORD_MESSAGE))
-                        statusLogin = StatusCodes.INCORRECT_PASSWORD;
+                    if (message.equals(ApplicationGlobals.USER_NOT_FOUND_MESSAGE)) statusLogin = ApplicationGlobals.USER_NOT_FOUND;
+                    else if (message.equals(ApplicationGlobals.INCORRECT_PASSWORD_MESSAGE))
+                        statusLogin = ApplicationGlobals.INCORRECT_PASSWORD;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -220,29 +195,29 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
         Log.d(TAG_DEBUG, "argumennt in OnpostExecute" + result);
 
         switch (result) {
-            case StatusCodes.INTERNAL_ERROR: {
+            case ApplicationGlobals.INTERNAL_ERROR: {
                 Toast.makeText(context, context.getText(R.string.internal_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
-            case StatusCodes.OK_RESPONSE: {
+            case ApplicationGlobals.OK_RESPONSE: {
                 Toast.makeText(context, context.getText(R.string.login_success_message), Toast.LENGTH_LONG).show();
                 // In case of successful log in: dismiss login activity
                 ((LoginActivity)context).finish();
                 break ;
 
             }
-            case StatusCodes.USER_NOT_FOUND: {
+            case ApplicationGlobals.USER_NOT_FOUND: {
                 Toast.makeText(context, context.getText(R.string.user_not_found_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
-            case StatusCodes.INCORRECT_PASSWORD: {
+            case ApplicationGlobals.INCORRECT_PASSWORD: {
                 Toast.makeText(context, context.getText(R.string.incorrect_password_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
-            case StatusCodes.NOT_FOUND__RESPONSE: {
+            case ApplicationGlobals.NOT_FOUND__RESPONSE: {
                 Toast.makeText(context, context.getText(R.string.not_found_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
