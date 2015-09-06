@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
+
 import org.apache.http.HttpResponse;
 ;
 import org.apache.http.protocol.HTTP;
@@ -17,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
 import java.util.HashMap;
 
 /**
@@ -72,8 +75,10 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
      */
     @Override
     protected Integer doInBackground(Void... params) {
+
         //return internal error status by default
         int statusLogin = SharedAttributes.INTERNAL_ERROR ;
+
 
 
         //generate the request body
@@ -133,13 +138,14 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
      * @return JsonObject that encapsulates the body of the request
      */
 
-    private JSONObject loginBody() throws JSONException {
-        JSONObject rBody = new JSONObject();
-        rBody.put("username", this.email);
-        rBody.put("password", this.password);
-        rBody.put("client", "Apriary");
 
-        return rBody;
+    private JSONObject loginBody() throws JSONException {
+        JSONObject resBody = new JSONObject();
+        resBody.put("username", this.email);
+        resBody.put("password", this.password);
+        resBody.put("client", "Apriary");
+
+        return resBody;
     }
 
 
@@ -154,7 +160,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
         // Return internal error status by default (if response null or an exception occurred) ;
+
         int statusLogin = SharedAttributes.INTERNAL_ERROR;
+
 
         if (response != null) {
             // Get status code response
@@ -166,7 +174,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
 
             // Determine if it's an undefined user or a wrong password
+
             if (statusLogin == SharedAttributes.UNAUTHORIZED__RESPONSE) {
+
 
                 String resBody = null;
                 try {
@@ -177,9 +187,11 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
                     Log.d(TAG_DEBUG, "Replied with entity " + message);
 
                     // Put corresponding status with respect to the received message
+
                     if (message.equals(SharedAttributes.USER_NOT_FOUND_MESSAGE)) statusLogin = SharedAttributes.USER_NOT_FOUND;
                     else if (message.equals(SharedAttributes.INCORRECT_PASSWORD_MESSAGE))
                         statusLogin = SharedAttributes.INCORRECT_PASSWORD;
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -201,29 +213,38 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
         Log.d(TAG_DEBUG, "argumennt in OnpostExecute" + result);
 
         switch (result) {
+
             case SharedAttributes.INTERNAL_ERROR: {
+
                 Toast.makeText(context, context.getText(R.string.internal_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
             case SharedAttributes.OK_RESPONSE: {
+
                 Toast.makeText(context, context.getText(R.string.login_success_message), Toast.LENGTH_LONG).show();
                 // In case of successful log in: dismiss login activity
                 ((LoginActivity)context).finish();
                 break ;
 
             }
+
             case SharedAttributes.USER_NOT_FOUND: {
+
                 Toast.makeText(context, context.getText(R.string.user_not_found_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
+
             case SharedAttributes.INCORRECT_PASSWORD: {
+
                 Toast.makeText(context, context.getText(R.string.incorrect_password_error_message), Toast.LENGTH_LONG).show();
                 break ;
 
             }
+
             case SharedAttributes.NOT_FOUND__RESPONSE: {
+
                 Toast.makeText(context, context.getText(R.string.not_found_error_message), Toast.LENGTH_LONG).show();
                 break ;
 

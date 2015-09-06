@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
 import org.apache.http.HttpResponse;
+
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -14,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,10 +49,12 @@ public class UserActivitiesRetrieverAsyncTask extends AsyncTask<Void, Void, Arra
 
         //TODO modify the the server
         // generate the url for the login service
+
         String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
         // Post data to server and get Response
 
         HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
+
         ArrayList<String> activityList = null;
         try {
             JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
@@ -84,7 +89,9 @@ public class UserActivitiesRetrieverAsyncTask extends AsyncTask<Void, Void, Arra
                 String t= obj.getString("type");
                 String n =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
 
+
                 UserInteraction ua = new UserInteraction(t,n);
+
                 Log.e("new user activity",ua.toString());
                 listActivities.add(ua.toString());
             } catch (JSONException e) {

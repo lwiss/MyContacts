@@ -8,8 +8,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
@@ -74,7 +76,9 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
     protected Integer doInBackground(Void... params) {
 
         // Initialize status code to return
+
         int status = SharedAttributes.INTERNAL_ERROR ;
+
 
         //generate the request body
         JSONObject reqBody = this.logoutBody();
@@ -84,6 +88,7 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
         headers.put(HTTP.CONTENT_TYPE, "application/json");
 
         // generate the url for the login service
+
         String url= SharedAttributes.BASE_URL+ SharedAttributes.LOGOUT_URI;
 
 
@@ -98,6 +103,7 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
 
         }
 
+
         return status;
     }
 
@@ -109,9 +115,11 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
      */
     private JSONObject logoutBody() {
 
+
         JSONObject rBody = new JSONObject();
 
         // Get token from shared preferences.
+
         String token = setting.getString(String.valueOf(this.context.getText(R.string.token_key)), null);
         try {
             rBody.put("authToken", token);
@@ -132,7 +140,9 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
         progressDialog.dismiss();
 
 
+
         if(result == SharedAttributes.NO_CONTENT) {
+
             Toast.makeText(this.context,this.context.getText(R.string.logging_out_message),Toast.LENGTH_SHORT).show(); ;
         }
 
