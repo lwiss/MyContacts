@@ -27,6 +27,7 @@
 
     <string name="logging_out_message_spinner">Logging out ...</string>
     <string name="logging_out_message">You are logged out.</string>
+    <string name="title_activity_display_contacts">DisplayContactsActivity</string>
 
 
 

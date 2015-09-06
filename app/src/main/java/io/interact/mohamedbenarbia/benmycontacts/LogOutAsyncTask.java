@@ -150,6 +150,8 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
     @Override
     protected void onPostExecute(Integer result) {
 
+        Log.d(TAG_DEBUG, "Server responds with result" + result) ;
+
         // Dismiss progress dialog
         progressDialog.dismiss();
 

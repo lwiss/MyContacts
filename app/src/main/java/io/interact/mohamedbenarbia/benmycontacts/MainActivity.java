@@ -57,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void displayContacts(View view) {
+        Intent intent = new Intent(this,
+                DisplayContactsActivity.class);
+        startActivity(intent);
+
     }
 
 
