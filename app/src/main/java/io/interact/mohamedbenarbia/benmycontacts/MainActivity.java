@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void displayActivities(View view) {
-
+        (new UserActivitiesRetrieverAsyncTask(this)).execute();
 
     }
 
