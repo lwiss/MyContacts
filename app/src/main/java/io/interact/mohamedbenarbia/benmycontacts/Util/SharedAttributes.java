@@ -47,8 +47,13 @@ public class SharedAttributes {
      */
     public static String INTERACTIONS_LIST_URI="interactions/list";
 
+    /**
+     * Location to store all applications runtime data
+     */
+    public static final String NAME_DIR_APP_DATA = "benMyContacts";
 
+    public static final String NAME_DIR_LOG = "log";
 
-
+    public static final String NAME_FILE_USER_INTERACTIONS = "interactions.csv";
 
 }

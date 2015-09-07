@@ -59,7 +59,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         try {
             JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
             JSONArray jsonActivities = resBody.getJSONArray("data");
-            activityList=jsonArray2activitiesList(jsonActivities);
+            activityList= jsonArray2InteractionsList(jsonActivities);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         activity.startActivity(i);
     }
 
-    private ArrayList<String> jsonArray2activitiesList(JSONArray jsonArray){
+    private ArrayList<String> jsonArray2InteractionsList(JSONArray jsonArray){
         ArrayList<String> listActivities= new ArrayList<>();
 
         for (int i=0; i<jsonArray.length(); i++) {
