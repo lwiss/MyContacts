@@ -23,14 +23,14 @@ import java.util.HashMap;
 /**
  * Created by wissem on 05.09.15.
  */
-public class UserActivitiesRetrieverAsyncTask extends AsyncTask<Void, Void, ArrayList<String>> {
+public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
 
     public int offset=0,limit=15;
     public JSONObject filters;
     Activity activity ;
 
-    public UserActivitiesRetrieverAsyncTask(Activity a) {
+    public UserInteractionsRetrieverAsyncTask(Activity a) {
         this.activity = a;
     }
 
@@ -75,7 +75,7 @@ public class UserActivitiesRetrieverAsyncTask extends AsyncTask<Void, Void, Arra
     protected void onPostExecute(ArrayList<String> o) {
         super.onPostExecute(o);
         //start the list activity
-        Intent i = new Intent(activity, ActivitiesDisplay.class);
+        Intent i = new Intent(activity, DisplayInteractions.class);
         i.putStringArrayListExtra("interactions list",o);
         activity.startActivity(i);
     }
