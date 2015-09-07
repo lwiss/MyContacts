@@ -49,7 +49,6 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
 
         //TODO modify the the server
         // generate the url for the login service
-
         String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
         // Post data to server and get Response
 
@@ -86,11 +85,16 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         for (int i=0; i<jsonArray.length(); i++) {
             try {
                 JSONObject obj= (JSONObject)jsonArray.get(i);
-                String t= obj.getString("type");
-                String n =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
+                //get the type of the interaction
+                String type= obj.getString("type");
+                //get the contactName (i.e the person/compagny with whom the interaction was established)
+                String name =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
+                //get the creation date of the interaction
+                String timestamp = obj.getString("created");
+                //get the direction of the interaction
+                String direction = obj.getString("direction");
 
-
-                UserInteraction ua = new UserInteraction(t,n);
+                UserInteraction ua = new UserInteraction(type, name, timestamp, direction);
 
                 Log.e("new user activity",ua.toString());
                 listActivities.add(ua.toString());
