@@ -2,9 +2,14 @@ package io.interact.mohamedbenarbia.benmycontacts;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import android.widget.Toast;
+import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
 import org.apache.http.HttpResponse;
@@ -19,6 +24,8 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Scanner;
 
 /**
  * Created by wissem on 05.09.15.
@@ -38,34 +45,52 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
     protected ArrayList<String> doInBackground(Void... params) {
 
 
-        JSONObject reqBody = this.interactionRequestBody();
 
-        // generate the headers
-        HashMap<String,String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, "application/json");
-        headers.put("Accept", "application/json");
-        //TODO get the auth token
-        headers.put("authToken", "gfUH43trfdkjg34");
-
-        //TODO modify the the server
-        // generate the url for the login service
-        String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
-        // Post data to server and get Response
-
-        HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
-
-        ArrayList<String> activityList = null;
+        //read the list of interaction from the cache
         try {
-            JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
-            JSONArray jsonActivities = resBody.getJSONArray("data");
-            activityList= jsonArray2InteractionsList(jsonActivities);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            ArrayList<UserInteraction> interactionsListCached = fromCahce2InteractionList();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return activityList;
+
+        //check if there is a connection or not
+        ConnectivityManager conMan = (ConnectivityManager) this.activity.getSystemService(this.activity.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMan.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) { // connection is available  ==> get interactions from the server then compare it to the list retrieved from the cache
+
+            JSONObject reqBody = this.interactionRequestBody();
+
+            // generate the headers
+            HashMap<String,String> headers = new HashMap<>();
+            headers.put(HTTP.CONTENT_TYPE, "application/json");
+            headers.put("Accept", "application/json");
+            //TODO get the auth token
+            headers.put("authToken", "gfUH43trfdkjg34");
+
+            //TODO modify the the server
+            // generate the url for the login service
+            String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
+            // Post data to server and get Response
+
+            HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
+
+            try {
+                JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
+                JSONArray jsonInteractions = resBody.getJSONArray("data");
+                //interactionsStringList= jsonArray2InteractionsList(jsonInteractions);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+
+        return new ArrayList<>();
     }
 
 
@@ -79,24 +104,21 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         activity.startActivity(i);
     }
 
+    /**
+     *
+     * @param jsonArray
+     * @return
+     */
     private ArrayList<String> jsonArray2InteractionsList(JSONArray jsonArray){
         ArrayList<String> listActivities= new ArrayList<>();
 
         for (int i=0; i<jsonArray.length(); i++) {
             try {
                 JSONObject obj= (JSONObject)jsonArray.get(i);
-                //get the type of the interaction
-                String type= obj.getString("type");
-                //get the contactName (i.e the person/compagny with whom the interaction was established)
-                String name =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
-                //get the creation date of the interaction
-                String timestamp = obj.getString("created");
-                //get the direction of the interaction
-                String direction = obj.getString("direction");
 
-                UserInteraction ua = new UserInteraction(type, name, timestamp, direction);
+                UserInteraction ua = new UserInteraction(obj);
 
-                Log.e("new user activity",ua.toString());
+                Log.e("new user activity", ua.toString());
                 listActivities.add(ua.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -105,6 +127,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         }
 
         return listActivities;
+
     }
     /**
      * Post the email and password to the server
@@ -126,10 +149,28 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
             postRequestBody.put("filters", this.filters);
 
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return postRequestBody;
     }
+
+    /**
+     *
+     * @return a list of string each string correspond to a JSONObject
+     */
+    private ArrayList<UserInteraction> fromCahce2InteractionList() throws JSONException {
+        ArrayList<UserInteraction> res=new ArrayList<>();
+        ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).fetchStringList();
+        Iterator<String> it = l.iterator();
+        while (it.hasNext()) {
+            JSONObject obj=new JSONObject(it.next());
+            res.add(new UserInteraction(obj));
+        }
+        return res;
+    }
+
+
+
+
 }

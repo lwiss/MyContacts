@@ -3,10 +3,13 @@ package io.interact.mohamedbenarbia.benmycontacts.Util;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Manages all log file for the application
@@ -159,6 +162,67 @@ public class FileLogger {
         }
 
         return null;
+    }
+
+    /**
+     * Opens the stream to read into the current log file
+     *
+     * @return the output stream to write or {@code null}
+     */
+    private FileInputStream openInStream() {
+        File storageRootDir = android.os.Environment.getExternalStorageDirectory();
+
+        if (storageRootDir.canRead()) {
+            File storageDir = new File(storageRootDir.getAbsolutePath() +
+                    "/" +
+                    SharedAttributes.NAME_DIR_APP_DATA +
+                    "/" +
+                    SharedAttributes.NAME_DIR_LOG);
+
+            try {
+                if (!storageDir.exists()) {
+
+                    Log.w(LOG_TAG, "No such directory " + storageDir.getAbsolutePath());
+
+                }
+
+                if (storageDir.exists() && storageDir.canRead()) {
+                    return new FileInputStream(storageDir + "/" + mFileName);
+                }
+            } catch (IOException ioE) {
+                ioE.printStackTrace();
+            }
+        } else {
+            Log.e(LOG_TAG, "Failed to gain read access to " + storageRootDir.getAbsolutePath());
+        }
+
+        return null;
+    }
+
+
+    /**
+     *
+     * @return null if a problem occurs
+     */
+    public List<String> fetchStringList() {
+        List<String> res = null;
+        try {
+            FileInputStream inStream = openInStream();
+
+            if (null != inStream) {
+                res = new ArrayList<>();
+                Scanner scanner = new Scanner(inStream);
+                while (scanner.hasNextLine()) {
+                    res.add(scanner.nextLine());
+                }
+                inStream.close();
+                return res;
+            }
+        } catch (IOException ioE) {
+            ioE.printStackTrace();
+        }
+
+        return res;
     }
 
     /**

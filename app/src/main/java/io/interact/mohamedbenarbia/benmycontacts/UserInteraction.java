@@ -2,6 +2,9 @@ package io.interact.mohamedbenarbia.benmycontacts;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by wissem on 05.09.15.
@@ -29,6 +32,23 @@ public class UserInteraction implements Comparable<UserInteraction>{
     private InteractionStatus status;
 
 
+
+    public UserInteraction(JSONObject obj) throws JSONException {
+        //get the type of the interaction
+        String t= obj.getString("type");
+        //get the contactName (i.e the person/company with whom the interaction was established)
+        String n =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
+        //get the creation date of the interaction
+        String ts = obj.getString("created");
+        //get the direction of the interaction
+        String direc = obj.getString("direction");
+
+        this.type=InteractionType.valueOf(t);
+        this.contactName=n;
+        this.created=Long.getLong(ts);
+        this.direction=Direction.valueOf(direc);
+
+    }
 
 
 
