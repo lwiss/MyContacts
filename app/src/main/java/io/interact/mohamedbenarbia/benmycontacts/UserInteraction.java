@@ -115,6 +115,18 @@ public class UserInteraction implements Comparable<UserInteraction>{
         return false;
     }
 
+    public String getContactName() {
+        return contactName;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
     /**
      * different tyoes of interactions
      */
