@@ -17,14 +17,14 @@ import java.util.List;
 /**
  * Created by wissem on 06.09.15.
  */
-public class ActivitiesDisplay extends ListActivity {
+public class DisplayInteractions extends ListActivity {
 
     private ArrayList<String> ua;
 
-    public ActivitiesDisplay() {
+    public DisplayInteractions() {
     }
 
-    public ActivitiesDisplay(ArrayList<String> ua) {
+    public DisplayInteractions(ArrayList<String> ua) {
         this.ua = ua;
     }
 
