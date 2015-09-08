@@ -13,9 +13,6 @@ public class DisplayContactsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_contacts);
 
-        FetchContactsAsyncTask fetchContactsAsyncTask = new FetchContactsAsyncTask(this);
-        fetchContactsAsyncTask.execute();
-
     }
 
 

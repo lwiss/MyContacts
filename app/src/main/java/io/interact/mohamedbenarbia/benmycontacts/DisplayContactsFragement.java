@@ -8,13 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-
 /**
- * A fragment representing a list of Items.
- * <p/>
- * <p/>
- * Activities containing this fragment MUST implement the.
- * interface.
+ * A fragment that displays the contacts.
  */
 public class DisplayContactsFragement extends ListFragment {
 
@@ -23,13 +18,14 @@ public class DisplayContactsFragement extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Test1", "Test1", "Test1", "Test1", "Test1", "Test1" };
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, values);
-        setListAdapter(adapter);
+
+        FetchContactsAsyncTask fetchContactsAsyncTask = new FetchContactsAsyncTask(this);
+        fetchContactsAsyncTask.execute();
+
     }
+
+
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

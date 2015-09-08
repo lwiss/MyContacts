@@ -43,9 +43,14 @@ public class SharedAttributes {
      */
     public static String LOGOUT_URI="logout";
     /**
-     * uri for reqesting the interaction list from the Interaction service
+     * uri for requesting the interaction list from the Interaction service
      */
     public static String INTERACTIONS_LIST_URI="interactions/list";
+
+    /**
+     * uri for retrieving contacts
+     */
+    public static String CONTACTS_URI = "contacts" ;
 
 
 
