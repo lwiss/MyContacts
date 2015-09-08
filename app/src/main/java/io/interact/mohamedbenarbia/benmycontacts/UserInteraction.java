@@ -91,6 +91,12 @@ public class UserInteraction implements Comparable<UserInteraction>{
         return obj.toString();
     }
 
+
+    public void addInteractionToServer() {
+
+    }
+
+
     /**
      *  compares two users interactions based on their creation date
      * @param another the user interaction to be compared against

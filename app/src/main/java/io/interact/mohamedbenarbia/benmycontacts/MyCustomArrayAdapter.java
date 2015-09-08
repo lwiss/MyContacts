@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -23,6 +24,8 @@ public class MyCustomArrayAdapter extends ArrayAdapter<UserInteraction> {
     public MyCustomArrayAdapter(Context context, ArrayList<UserInteraction> aList) {
         super(context, -1, aList);
         this.context = context;
+        this.sort(new InteractionComparator());
+
 
     }
 
@@ -52,6 +55,14 @@ public class MyCustomArrayAdapter extends ArrayAdapter<UserInteraction> {
         Date now = new Date(timeStamp);
         String strDate = sdfDate.format(now);
         return strDate;
+    }
+
+    public class InteractionComparator implements Comparator<UserInteraction> {
+
+        @Override
+        public int compare(UserInteraction lhs, UserInteraction rhs) {
+            return -lhs.compareTo(rhs);
+        }
     }
 
 }
