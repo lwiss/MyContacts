@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void displayActivities(View view) {
-        (new UserInteractionsRetrieverAsyncTask(this)).execute();
+        Intent intent = new Intent(this,
+                DisplayInteractions.class);
+        startActivity(intent);
 
     }
 

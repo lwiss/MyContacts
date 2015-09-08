@@ -19,56 +19,11 @@ import java.util.List;
  */
 public class DisplayInteractions extends ListActivity {
 
-    private ArrayList<String> ua;
-
-    public DisplayInteractions() {
-    }
-
-    public DisplayInteractions(ArrayList<String> ua) {
-        this.ua = ua;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.user_activities_listview);
-
-        Intent i =getIntent();
-        this.ua=i.getStringArrayListExtra("interactions list");
-        Log.e("list", "" + this.ua.size());
-        setListAdapter(new MyCustomArrayAdapter(this, this.ua));
+        setContentView(R.layout.activity_display_interactions);
     }
-
-
-    public class MyCustomArrayAdapter extends ArrayAdapter <String> {
-        private final Context context;
-        private ArrayList<String> aList;
-
-        public MyCustomArrayAdapter(Context context, ArrayList<String> aList) {
-            super(context, -1, aList);
-            this.context = context;
-            this.aList = aList;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.row_element_layout, parent, false);
-            TextView textView = (TextView) rowView.findViewById(R.id.activityDetails);
-            textView.setText(aList.get(position).toString());
-            // change the icon for Windows and iPhone
-//            String s = values[position];
-//            if (s.startsWith("iPhone")) {
-//                imageView.setImageResource(R.drawable.no);
-//            } else {
-//                imageView.setImageResource(R.drawable.ok);
-//            }
-
-            return rowView;
-        }
-    }
-
 
 
 }

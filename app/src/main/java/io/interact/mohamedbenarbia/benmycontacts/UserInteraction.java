@@ -2,6 +2,7 @@ package io.interact.mohamedbenarbia.benmycontacts;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +11,10 @@ import org.json.JSONObject;
  * Created by wissem on 05.09.15.
  */
 public class UserInteraction implements Comparable<UserInteraction>{
+    /**
+     * unique id of the interaction
+     */
+    private String id;
     /**
      * name of the contact that was involved in this interaction
      */
@@ -34,25 +39,29 @@ public class UserInteraction implements Comparable<UserInteraction>{
 
 
     public UserInteraction(JSONObject obj) throws JSONException {
+        //get the id of the interaction
+        String interactionID=obj.getString("id");
         //get the type of the interaction
         String t= obj.getString("type");
         //get the contactName (i.e the person/company with whom the interaction was established)
         String n =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
         //get the creation date of the interaction
-        String ts = obj.getString("created");
+        Long ts = obj.getLong("created");
         //get the direction of the interaction
         String direc = obj.getString("direction");
 
+        this.id=interactionID;
         this.type=InteractionType.valueOf(t);
         this.contactName=n;
-        this.created=Long.getLong(ts);
+        this.created=ts;
         this.direction=Direction.valueOf(direc);
 
     }
 
 
 
-    public UserInteraction(String t, String n, String timeStamp, String direction){
+    public UserInteraction(String interactionID, String t, String n, String timeStamp, String direction){
+        this.id=interactionID;
         this.type=InteractionType.valueOf(t);
         this.contactName=n;
         this.created=Long.getLong(timeStamp);
@@ -68,7 +77,18 @@ public class UserInteraction implements Comparable<UserInteraction>{
     }
 
     public String toString() {
-        return this.type.toString() + " " + this.contactName;
+
+        JSONObject obj=new JSONObject();
+        try {
+            obj.put("id",id);
+            obj.put("type",type);
+            obj.put("created",created);
+            obj.put("contacts",(new JSONArray()).put(new JSONObject().put("displayName",contactName)));
+            obj.put("direction",direction);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
     }
 
     /**
@@ -87,6 +107,13 @@ public class UserInteraction implements Comparable<UserInteraction>{
         return -1;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this instanceof UserInteraction && other instanceof UserInteraction) {
+            return this.id.equals(((UserInteraction) other).id);
+        }
+        return false;
+    }
 
     /**
      * different tyoes of interactions

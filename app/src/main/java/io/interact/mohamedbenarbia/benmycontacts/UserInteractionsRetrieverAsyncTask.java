@@ -1,14 +1,14 @@
 package io.interact.mohamedbenarbia.benmycontacts;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
@@ -22,39 +22,43 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by wissem on 05.09.15.
  */
-public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, ArrayList<String>> {
+public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, ArrayList<UserInteraction>> {
+
+    private final String LOG_TAG=UserInteractionsRetrieverAsyncTask.class.getName();
 
 
-    public int offset=0,limit=15;
+    public int offset=0,limit=-1;
     public JSONObject filters;
-    Activity activity ;
+    private DisplayInteractionsFragment fragment ;
+    ArrayList<UserInteraction> interactionsFromCache= new ArrayList<>();
+    ArrayList<UserInteraction> interactionsListFromServer=new ArrayList<>();
 
-    public UserInteractionsRetrieverAsyncTask(Activity a) {
-        this.activity = a;
+    public UserInteractionsRetrieverAsyncTask(DisplayInteractionsFragment a) {
+        this.fragment = a;
     }
 
     @Override
-    protected ArrayList<String> doInBackground(Void... params) {
-
-
-
-        //read the list of interaction from the cache
+    protected void onPreExecute() {
         try {
-            ArrayList<UserInteraction> interactionsListCached = fromCahce2InteractionList();
+            this.interactionsFromCache = fromCache2InteractionList();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        fragment.setListAdapter(new MyCustomArrayAdapter(fragment.getActivity(),this.interactionsFromCache));
+        Log.e(LOG_TAG, "size of the cached list" + interactionsFromCache.size());
+    }
+
+
+    @Override
+    protected ArrayList<UserInteraction> doInBackground(Void... params) {
 
         //check if there is a connection or not
-        ConnectivityManager conMan = (ConnectivityManager) this.activity.getSystemService(this.activity.CONNECTIVITY_SERVICE);
+        ConnectivityManager conMan = (ConnectivityManager) this.fragment.getActivity().getSystemService(this.fragment.getActivity().CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMan.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) { // connection is available  ==> get interactions from the server then compare it to the list retrieved from the cache
 
@@ -77,58 +81,66 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
             try {
                 JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
                 JSONArray jsonInteractions = resBody.getJSONArray("data");
-                //interactionsStringList= jsonArray2InteractionsList(jsonInteractions);
+                this.interactionsListFromServer = jsonArray2InteractionsList(jsonInteractions);
 
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        //now compare the two lists
+        //construct the list of strings that should be passed to the list adapter
+        ArrayList<UserInteraction> toBeAddedtoCache=new ArrayList<>();
+        toBeAddedtoCache.addAll(interactionsListFromServer);
+        toBeAddedtoCache.removeAll(interactionsFromCache); // contains the interactions that are in the server but not in the cache
+        // log the elements that need to be added to the log file
+        Log.e(LOG_TAG, "size of the difference between cache and server lists :" + toBeAddedtoCache.size());
+        FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).logList(toBeAddedtoCache);
 
 
+        //TODO in case we want ot update the interaction to the server
+        //Collection<UserInteraction> toBeAddedtoServer=new HashSet<>(interactionsFromCache);
+        //toBeAddedtoServer.removeAll(interactionsListFromServer);
+        return toBeAddedtoCache;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<UserInteraction> toBeAddedtoCache) {
+        super.onPostExecute(toBeAddedtoCache);
+        Log.e(LOG_TAG, "add the elements of the list to the array adapter");
+        for (UserInteraction elem :toBeAddedtoCache) {
+
+            ((MyCustomArrayAdapter) fragment.getListAdapter()).add(elem);
 
         }
 
-
-        return new ArrayList<>();
-    }
-
-
-
-    @Override
-    protected void onPostExecute(ArrayList<String> o) {
-        super.onPostExecute(o);
-        //start the list activity
-        Intent i = new Intent(activity, DisplayInteractions.class);
-        i.putStringArrayListExtra("interactions list",o);
-        activity.startActivity(i);
     }
 
     /**
-     *
-     * @param jsonArray
-     * @return
+     *  Takes the JSONArray that cames from the server and constructs the list of user's interactions
+     * @param jsonArray server response
+     * @return List of UserInteraction that the server holds,
+     *         if the response of the server is empty then returns an empty list
      */
-    private ArrayList<String> jsonArray2InteractionsList(JSONArray jsonArray){
-        ArrayList<String> listActivities= new ArrayList<>();
+    private ArrayList<UserInteraction> jsonArray2InteractionsList(JSONArray jsonArray){
+
+        ArrayList<UserInteraction> listActivities= new ArrayList<>();
 
         for (int i=0; i<jsonArray.length(); i++) {
             try {
                 JSONObject obj= (JSONObject)jsonArray.get(i);
-
                 UserInteraction ua = new UserInteraction(obj);
-
-                Log.e("new user activity", ua.toString());
-                listActivities.add(ua.toString());
+                Log.e(LOG_TAG, "new user activity fetched : "+ua.toString());
+                listActivities.add(ua);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
-
         return listActivities;
-
     }
+
     /**
      * Post the email and password to the server
      *
@@ -157,20 +169,25 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
 
     /**
      *
-     * @return a list of string each string correspond to a JSONObject
+     *  constructs a list of users interactions based on the cache of the user
+     *  If the cache is empty or does not exist already then the returned list is empty
+     * @return  list of UserInteraction that are logged in the cache, the list is empty if the cache is empty
      */
-    private ArrayList<UserInteraction> fromCahce2InteractionList() throws JSONException {
+    private ArrayList<UserInteraction> fromCache2InteractionList() throws JSONException {
+
         ArrayList<UserInteraction> res=new ArrayList<>();
         ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).fetchStringList();
-        Iterator<String> it = l.iterator();
-        while (it.hasNext()) {
-            JSONObject obj=new JSONObject(it.next());
-            res.add(new UserInteraction(obj));
+
+        if(null != l) { // the cache already contains something
+            Iterator<String> it = l.iterator();
+
+            while (it.hasNext()) {
+                JSONObject obj = new JSONObject(it.next());
+                res.add(new UserInteraction(obj));
+            }
         }
         return res;
     }
-
-
 
 
 }
