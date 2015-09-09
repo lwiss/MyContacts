@@ -39,6 +39,15 @@
             android:name=".DisplayContactsActivity"
             android:label="@string/title_activity_display_contacts" >
         </activity>
+
+        <service
+                android:name=".services.CacheHandlerService"
+                android:exported="false"/>
+        <service
+                android:name=".services.NewInteractionHandlerService"
+                android:exported="false"/>
+
+
     </application>
 
 </manifest>

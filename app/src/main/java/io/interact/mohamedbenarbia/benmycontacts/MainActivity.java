@@ -1,5 +1,8 @@
 package io.interact.mohamedbenarbia.benmycontacts;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -9,6 +12,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
+import io.interact.mohamedbenarbia.benmycontacts.services.CacheHandlerService;
+import io.interact.mohamedbenarbia.benmycontacts.services.NewInteractionHandlerService;
 
 
 /**
@@ -19,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG_DEBUG = "MAIN ACTIVITY";
+    AlarmManager mAlarmManager;
 
-
+    int mycounter=100;
 
     /**
      * Load principle view otherwise lunch LoginActivity if user logged out.
@@ -43,12 +50,33 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (hasAlarmService()) {
+            Log.e(TAG_DEBUG, "Enables sensor acquisition agent");
+            Intent serviceIntent = new Intent(this, CacheHandlerService.class);
+            PendingIntent pIntent = PendingIntent.getService(this,
+                    456,
+                    serviceIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + SharedAttributes.TIME_MILIS_SERVICE_STARTUP_DELAY,
+                    SharedAttributes.TIME_MILIS_SERVICE_WAKEUP_INTERVAL,
+                    pIntent);
+        }
+
 
 
     }
+   // String interactionID, String t, String n, String timeStamp, String direction, String from, String to
 
 
-
+    public void dummyinter(View view) {
+        UserInteraction inter = new UserInteraction("wiss", "call","wissem", "1111111111", "OUTBOUND", ""+mycounter, ""+mycounter);
+        Intent mServiceIntent = new Intent(this, NewInteractionHandlerService.class);
+        mServiceIntent.putExtra("interaction",inter.toString());
+        this.startService(mServiceIntent);
+        mycounter++;
+    }
 
 
     public void displayActivities(View view) {
@@ -72,5 +100,22 @@ public class MainActivity extends AppCompatActivity {
         LogOutAsyncTask logOutAsyncTask = new LogOutAsyncTask(this);
         logOutAsyncTask.execute();
 
+    }
+
+    /**
+     * Verifies {@link AlarmManager} is initialized
+     *
+     * @return {@code true}, if {@link AlarmManager} is properly initialized, {@code false} otherwise
+     */
+    private boolean hasAlarmService() {
+        if (null == mAlarmManager ) {
+            mAlarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        }
+
+        if (null == mAlarmManager) {
+            Log.e(TAG_DEBUG, "Failed to get system alarm service");
+        }
+
+        return null != mAlarmManager;
     }
 }

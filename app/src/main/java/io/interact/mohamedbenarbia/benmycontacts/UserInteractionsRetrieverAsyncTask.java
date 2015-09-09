@@ -45,7 +45,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
     @Override
     protected void onPreExecute() {
         try {
-            this.interactionsFromCache = fromCache2InteractionList();
+            this.interactionsFromCache = fromCache2InteractionList(SharedAttributes.NAME_FILE_USER_INTERACTIONS);
+            //add the list of interaction that was triggered offline
+            ArrayList<UserInteraction> offlineInteractions=fromCache2InteractionList(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED);
+            this.interactionsFromCache.addAll(offlineInteractions);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,9 +103,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).logList(toBeAddedtoCache);
 
 
-        //TODO in case we want ot update the interaction to the server
-        //Collection<UserInteraction> toBeAddedtoServer=new HashSet<>(interactionsFromCache);
-        //toBeAddedtoServer.removeAll(interactionsListFromServer);
+
         return toBeAddedtoCache;
     }
 
@@ -173,10 +174,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
      *  If the cache is empty or does not exist already then the returned list is empty
      * @return  list of UserInteraction that are logged in the cache, the list is empty if the cache is empty
      */
-    private ArrayList<UserInteraction> fromCache2InteractionList() throws JSONException {
+    private ArrayList<UserInteraction> fromCache2InteractionList(String fileName) throws JSONException {
 
         ArrayList<UserInteraction> res=new ArrayList<>();
-        ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).fetchStringList();
+        ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(fileName).fetchStringList();
 
         if(null != l) { // the cache already contains something
             Iterator<String> it = l.iterator();
@@ -188,6 +189,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         }
         return res;
     }
+
 
 
 }

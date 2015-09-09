@@ -3,9 +3,15 @@ package io.interact.mohamedbenarbia.benmycontacts;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
+import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by wissem on 05.09.15.
@@ -36,6 +42,11 @@ public class UserInteraction implements Comparable<UserInteraction>{
      */
     private InteractionStatus status;
 
+    /**
+     * specifies email address/phone number involved in the interaction
+     */
+    private String from, to;
+
 
 
     public UserInteraction(JSONObject obj) throws JSONException {
@@ -49,23 +60,29 @@ public class UserInteraction implements Comparable<UserInteraction>{
         Long ts = obj.getLong("created");
         //get the direction of the interaction
         String direc = obj.getString("direction");
+        String from = obj.getString("from");
+        String to = obj.getString("to");
 
         this.id=interactionID;
         this.type=InteractionType.valueOf(t);
         this.contactName=n;
         this.created=ts;
         this.direction=Direction.valueOf(direc);
+        this.from=from;
+        this.to=to;
 
     }
 
 
 
-    public UserInteraction(String interactionID, String t, String n, String timeStamp, String direction){
+    public UserInteraction(String interactionID, String t, String n, String timeStamp, String direction, String from, String to){
         this.id=interactionID;
         this.type=InteractionType.valueOf(t);
         this.contactName=n;
-        this.created=Long.getLong(timeStamp);
+        this.created=Long.parseLong(timeStamp);
         this.direction=Direction.valueOf(direction);
+        this.from=from;
+        this.to=to;
     }
 
     public String name() {
@@ -85,15 +102,51 @@ public class UserInteraction implements Comparable<UserInteraction>{
             obj.put("created",created);
             obj.put("contacts",(new JSONArray()).put(new JSONObject().put("displayName",contactName)));
             obj.put("direction",direction);
+            obj.put("from",from);
+            obj.put("to",to);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return obj.toString();
     }
 
+    /**
+     * prepares the body the the post request that will add this interaction to the server
+     * @return
+     */
+    private JSONObject preparePostBody(){
+        JSONObject res= new JSONObject();
+        try {
+            res.put("from",from);
+            res.put("type",type);
+            res.put("created",created);
+            res.put("direction",direction);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-    public void addInteractionToServer() {
+        return res;
+    }
 
+    public HttpResponse addInteractionToServer() {
+
+        JSONObject reqBody = preparePostBody();
+
+        // generate the headers
+        HashMap<String,String> headers = new HashMap<>();
+        headers.put(HTTP.CONTENT_TYPE, "application/json");
+        headers.put("Accept", "application/json");
+        //TODO get the auth token
+        headers.put("triggerToken", "gfUH43trfdkjg34");
+
+        //TODO modify the the server
+        // generate the url for the login service
+        String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_URI;
+        // Post data to server and get Response
+
+        HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
+
+        return resp;
     }
 
 

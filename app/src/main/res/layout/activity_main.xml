@@ -36,5 +36,15 @@
         android:onClick="displayActivities"
         />
 
+    <Button
+            android:id="@+id/dummyInteraction"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/displayUserActivity"
+            android:text="dummy interaction simulator"
+            android:onClick="dummyinter"
+            />
+
 
 </RelativeLayout>
