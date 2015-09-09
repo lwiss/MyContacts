@@ -48,7 +48,7 @@ public class SharedAttributes {
     public static String INTERACTIONS_LIST_URI="interactions/list";
 
     /**
-<<<<<<< HEAD
+     <<<<<<< HEAD
      * uri for retrieving contacts
      */
     public static String CONTACTS_URI = "contacts" ;
@@ -62,5 +62,8 @@ public class SharedAttributes {
     public static final String NAME_DIR_LOG = "log";
 
     public static final String NAME_FILE_USER_INTERACTIONS = "interactions.csv";
+
+    public static final String NAME_FILE_CONTACTS = "contacts.csv";
+
 
 }
