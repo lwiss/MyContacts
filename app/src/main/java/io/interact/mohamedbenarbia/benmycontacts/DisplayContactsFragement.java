@@ -19,6 +19,8 @@ public class DisplayContactsFragement extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        getListView().setDivider(null);
+        getListView().setDividerHeight(0);
         FetchContactsAsyncTask fetchContactsAsyncTask = new FetchContactsAsyncTask(this);
         fetchContactsAsyncTask.execute();
 

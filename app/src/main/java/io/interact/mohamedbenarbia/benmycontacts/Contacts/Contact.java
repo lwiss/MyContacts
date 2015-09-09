@@ -1,144 +1,231 @@
 package io.interact.mohamedbenarbia.benmycontacts.Contacts;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- *
  * Models a contact which can be a person or a company.
  * Created by MohamedBenArbia on 06/09/15.
  */
-public class Contact implements Comparable<Contact> {
+public class Contact implements Comparator<Contact> {
 
-    public static String TYPE_KEY = "contactType" ;
-    public static String FIRST_NAME_KEY = "firstName" ;
-    public static String LAST_NAME_KEY="lastName" ;
-    public static String COMPANY_NAME_KEY  = "companyName" ;
-    public static String PHONE_KEY="phoneNumbers" ;
-    public static String EMAIL_KEY="emails" ;
-    public static String DISPLAY_KEY="displayName" ;
+    public static String TYPE_KEY = "contactType";
+    public static String FIRST_NAME_KEY = "firstName";
+    public static String LAST_NAME_KEY = "lastName";
+    public static String COMPANY_NAME_KEY = "companyName";
+    public static String PHONE_KEY = "phoneNumbers";
+    public static String EMAIL_KEY = "emails";
+    public static String DISPLAY_KEY = "displayName";
+    public static String ID_KEY = "id";
+
+    private static String DEBUG_TAG = "Contact";
+
+
 
     @Override
-    public int compareTo(Contact another) {
-
-        return this.displayName.toLowerCase().compareTo(another.displayName.toLowerCase()) ;
+    public int compare(Contact lhs, Contact rhs) {
+        return lhs.displayName.toLowerCase().compareTo(rhs.displayName.toLowerCase());
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this instanceof Contact && other instanceof Contact) {
+            return this.id.equals(((Contact) other).id);
+        }
+        return false;
+    }
+
+
+    /**
+     * Used as a comparator.
+     */
+    public Contact() {
+        super();
+    }
 
     public enum Type {
-        COMPANY,PERSON
+        COMPANY, PERSON
     }
-    
+
     /**
      * Contact's first name
      */
-    private String firstName ;
+    private String firstName;
 
     /**
      * Contact's last name
      */
-    private String lastName ;
+    private String lastName;
 
     /**
      * Company Name in case of a company
      */
-    private String companyName ;
+    private String companyName;
 
     /**
      * Contact's emails. Presented by a JSONArray
      */
 
-    private JSONArray emails  ;
+    private JSONArray emails;
 
 
     /**
      * Contact's phone numbers. Same thing as emails.
      */
 
-    private JSONArray phoneNumbers  ;
+    private JSONArray phoneNumbers;
 
 
     /**
      * The contact type. Person or company.
      */
-    private Type type ;
+    private Type type;
 
 
     /**
-     * The display name of the contact. Will be used as a identifier of a contact.
+     * The display name of the contact.
      */
-    private String displayName ;
+    private String displayName;
 
 
+    /**
+     * Id of the contact.
+     */
+    private String id;
 
 
-    public Contact(Type type , String firstName , String lastName, JSONArray emails, JSONArray phoneNumbers, String displayName) {
+    public Contact(Type type, String firstName, String lastName, JSONArray emails, JSONArray phoneNumbers, String displayName) {
 
-        this.type = type ;
+        this.type = type;
 
-        if(firstName!=null) {
+        if (firstName != null) {
             this.firstName = firstName;
         } else {
-            this.firstName = "" ;
+            this.firstName = "";
         }
-        if(lastName!=null) {
-            this.lastName = lastName ;
-        }else  {
-            this.lastName = "" ;
+        if (lastName != null) {
+            this.lastName = lastName;
+        } else {
+            this.lastName = "";
         }
 
-        this.emails = emails ;
-        this.phoneNumbers = phoneNumbers ;
+        this.emails = emails;
+        this.phoneNumbers = phoneNumbers;
 
-        this.displayName = displayName  ;
+        this.displayName = displayName;
 
     }
 
 
-    public Contact(Type type , String companyName, JSONArray emails, JSONArray phoneNumbers, String displayName) {
+    /**
+     * Construct a contact from a JSON Object
+     *
+     * @param contactJsonObject jsonObject representing a contact
+     */
+    public Contact(JSONObject contactJsonObject) {
 
-        this.type = type ;
-
-        this.companyName = companyName ;
-
-        this.emails = emails ;
-        this.phoneNumbers = phoneNumbers ;
+        try {
+            // First check if it's a company or a contact;
+            this.type = Contact.Type.valueOf(contactJsonObject.getString(Contact.TYPE_KEY));
 
 
-        this.displayName = displayName ;
+            //Get the display name of the contact
+            this.displayName = contactJsonObject.getString(Contact.DISPLAY_KEY);
+
+            // Get the id of the contact
+            this.id = contactJsonObject.getString(Contact.ID_KEY) ;
+
+            JSONArray emails = null;
+            JSONArray phoneNumbers = null;
+
+            boolean emailExist = !contactJsonObject.isNull(Contact.EMAIL_KEY);
+            if (emailExist) {
+                this.emails = contactJsonObject.getJSONArray(Contact.EMAIL_KEY);
+                Log.d(DEBUG_TAG, "Fetchched emails " + emails);
+            }
+
+            boolean phoneExist = !contactJsonObject.isNull(Contact.PHONE_KEY);
+            if (phoneExist) {
+                this.phoneNumbers = contactJsonObject.getJSONArray(Contact.PHONE_KEY);
+                Log.d(DEBUG_TAG, "Fetchched phoneNumbers " + phoneNumbers);
+
+            }
+
+            if (type.equals(Contact.Type.PERSON)) {
+                String firstName = contactJsonObject.getString(Contact.FIRST_NAME_KEY);
+                String lastName = contactJsonObject.getString(Contact.LAST_NAME_KEY);
+                if (firstName != null) {
+                    this.firstName = firstName;
+                } else {
+                    this.firstName = "";
+                }
+                if (lastName != null) {
+                    this.lastName = lastName;
+                } else {
+                    this.lastName = "";
+                }
+            } else if (type.equals(Contact.Type.COMPANY)) {
+                String companyName = contactJsonObject.getString(Contact.COMPANY_NAME_KEY);
+                if(companyName!=null){
+                    this.companyName = companyName ;
+                }else{
+                    this.companyName="" ;
+                }
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Contact(Type type, String companyName, JSONArray emails, JSONArray phoneNumbers, String displayName) {
+
+        this.type = type;
+
+        this.companyName = companyName;
+
+        this.emails = emails;
+        this.phoneNumbers = phoneNumbers;
+
+
+        this.displayName = displayName;
     }
 
 
     @Override
     public String toString() {
-        String contactInfo = "" ;
+        String contactInfo = "";
 
-        contactInfo = "First Name: "+this.firstName +" Last Name: "+this.lastName   ;
+        contactInfo = "First Name: " + this.firstName + " Last Name: " + this.lastName;
 
-        if(this.emails!=null) {
+        if (this.emails != null) {
 
-        contactInfo = contactInfo + " emails:" + this.emails ;
-
-        }
-
-
-        if(this.phoneNumbers!=null) {
-
-            contactInfo = contactInfo + " emails:" + this.phoneNumbers ;
+            contactInfo = contactInfo + " emails:" + this.emails;
 
         }
 
-        return contactInfo  ;
+
+        if (this.phoneNumbers != null) {
+
+            contactInfo = contactInfo + " emails:" + this.phoneNumbers;
+
+        }
+
+        return contactInfo;
     }
 
 
-
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
 
@@ -147,7 +234,7 @@ public class Contact implements Comparable<Contact> {
     }
 
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     public JSONArray getPhoneNumbers() {
@@ -155,36 +242,41 @@ public class Contact implements Comparable<Contact> {
     }
 
 
-    public String getFullName() {
+    public String getDisplayName() {
 
 
-        return  this.displayName ;
+        return this.displayName;
 
+    }
+
+    public String getId() {
+        return this.id;
     }
 
 
     /**
      * Return a JSON object that represent the contact.
+     *
      * @return
      */
     public JSONObject getJson() {
-        JSONObject contactJSON = new JSONObject() ;
+        JSONObject contactJSON = new JSONObject();
         try {
-            contactJSON.put(TYPE_KEY,this.type.toString()) ;
-            contactJSON.put(FIRST_NAME_KEY,this.firstName) ;
-            contactJSON.put(LAST_NAME_KEY, this.lastName) ;
-            contactJSON.put(COMPANY_NAME_KEY,this.companyName) ;
-            contactJSON.put(EMAIL_KEY, this.emails) ;
-            contactJSON.put(PHONE_KEY,this.phoneNumbers) ;
-            contactJSON.put(DISPLAY_KEY,this.displayName) ;
+            contactJSON.put(TYPE_KEY, this.type.toString());
+            contactJSON.put(FIRST_NAME_KEY, this.firstName);
+            contactJSON.put(LAST_NAME_KEY, this.lastName);
+            contactJSON.put(COMPANY_NAME_KEY, this.companyName);
+            contactJSON.put(EMAIL_KEY, this.emails);
+            contactJSON.put(PHONE_KEY, this.phoneNumbers);
+            contactJSON.put(DISPLAY_KEY, this.displayName);
+            contactJSON.put(ID_KEY, this.id) ;
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return contactJSON ;
+        return contactJSON;
 
     }
-
 
 
 }
