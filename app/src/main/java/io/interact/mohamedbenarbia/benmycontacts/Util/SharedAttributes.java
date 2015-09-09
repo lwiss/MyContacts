@@ -53,7 +53,7 @@ public class SharedAttributes {
     public static String INTERACTIONS_URI="interactions";
 
     /**
-<<<<<<< HEAD
+
      * uri for retrieving contacts
      */
     public static String CONTACTS_URI = "contacts" ;
@@ -69,6 +69,7 @@ public class SharedAttributes {
     public static final String NAME_FILE_USER_INTERACTIONS = "interactions.csv";
 
 
+
     public static final String NAME_FILE_USER_INTERACTIONS_TRIGGERED = "interactions_triggered.csv";
     /**
      * in ms
@@ -79,5 +80,9 @@ public class SharedAttributes {
      * every 5 min
      */
     public static final int TIME_MILIS_SERVICE_WAKEUP_INTERVAL=5*60*1000;
+
+    public static final String NAME_FILE_CONTACTS = "contacts.csv";
+
+
 
 }
