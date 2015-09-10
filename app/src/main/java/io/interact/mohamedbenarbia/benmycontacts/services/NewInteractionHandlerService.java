@@ -10,9 +10,11 @@ import io.interact.mohamedbenarbia.benmycontacts.UserInteraction;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -54,17 +56,28 @@ public class NewInteractionHandlerService extends IntentService {
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isConnected()) { // connection is available
 
+                //TODO addInteractionToServer to be moved to this class
                 HttpResponse resp=interaction.addInteractionToServer();
-                if (resp!=null && resp.getStatusLine().getStatusCode()!=SharedAttributes.CREATED_RESPONSE){ // if the interaction has failed
-                    Log.e(LOG_TAG,"error occured when posting to server");
+                if (resp!=null && resp.getStatusLine().getStatusCode()==SharedAttributes.CREATED_RESPONSE){ // if the interaction push has succeeded
+                    // get the response of the server and construct and add the interaction to the cache (the cache that is supposed to e in sync with the server)
+                    try {
+                        JSONObject respBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
+                        UserInteraction uiFromServer = new UserInteraction(respBody.getJSONObject("entity"));
+                        Log.e(LOG_TAG,"interaction answered back by the server : "+uiFromServer);
+                        //write this interaction to the cache
+                        FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).logLine(uiFromServer.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else  { // if the interaction push has failed
+                    Log.e(LOG_TAG,"error occurred when posting to server");
                     //write it to the cache
                     FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED).logLine(interaction.toString());
                     Log.e(LOG_TAG, "interaction logged to cache ");
 
                 }
-            } else { //simply log the interaction
-
-                Log.e(LOG_TAG,"error occured when posting to server");
+            } else { //if there is no connectivity simply log the interaction
+                Log.e(LOG_TAG,"error occurred when posting to server");
                 //write it to the cache
                 FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED).logLine(interaction.toString());
                 Log.e(LOG_TAG, "interaction logged to cache ");
