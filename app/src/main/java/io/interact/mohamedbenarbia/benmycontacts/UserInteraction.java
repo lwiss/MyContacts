@@ -114,7 +114,7 @@ public class UserInteraction implements Comparable<UserInteraction>{
      * prepares the body the the post request that will add this interaction to the server
      * @return
      */
-    private JSONObject preparePostBody(){
+    public JSONObject preparePostBody(){
         JSONObject res= new JSONObject();
         try {
             res.put("from",from);
@@ -128,26 +128,7 @@ public class UserInteraction implements Comparable<UserInteraction>{
         return res;
     }
 
-    public HttpResponse addInteractionToServer() {
 
-        JSONObject reqBody = preparePostBody();
-
-        // generate the headers
-        HashMap<String,String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, "application/json");
-        headers.put("Accept", "application/json");
-        //TODO get the auth token
-        headers.put("triggerToken", "gfUH43trfdkjg34");
-
-        //TODO modify the the server
-        // generate the url for the login service
-        String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_URI;
-        // Post data to server and get Response
-
-        HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
-
-        return resp;
-    }
 
 
     /**

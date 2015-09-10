@@ -29,6 +29,7 @@ public class CacheHandlerService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        //Need to instanciate the context in the oncreate method because otherwise it won't be accessible from the working thread(i.e. onHandleIntent )
         context=this;
     }
 
@@ -37,12 +38,13 @@ public class CacheHandlerService extends IntentService {
 
         //
         try {
+            //take the interactions from cache to memory and empty the cache
             ArrayList<UserInteraction> triggeredInteractions = fromCache2InteractionList();
 
             Iterator<UserInteraction> it = triggeredInteractions.iterator();
             while (it.hasNext()) {
                 UserInteraction inter = it.next();
-
+                //for each interaction treat it as if it was freshly captured i.e. call the new interaction handler service
                 Intent mServiceIntent = new Intent(context, NewInteractionHandlerService.class);
                 mServiceIntent.putExtra("interaction",inter.toString());
                 context.startService(mServiceIntent);
@@ -76,6 +78,7 @@ public class CacheHandlerService extends IntentService {
                 res.add(new UserInteraction(obj));
             }
         }
+        //we empty the triggerd cache since we treat the cached interaction as new captured interactions
         FileLogger.remove(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED);
         return res;
     }
