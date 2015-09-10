@@ -60,7 +60,7 @@ public class NewInteractionHandlerService extends IntentService {
             if (netInfo != null && netInfo.isConnected()) { // connection is available
 
                 //TODO addInteractionToServer to be moved to this class
-                HttpResponse resp= addInteractionToServer(interaction);
+                HttpResponse resp=  addInteractionToServer(interaction);
                 if (resp!=null && resp.getStatusLine().getStatusCode()==SharedAttributes.CREATED_RESPONSE){ // if the interaction push has succeeded
                     // get the response of the server and construct and add the interaction to the cache (the cache that is supposed to e in sync with the server)
                     try {
