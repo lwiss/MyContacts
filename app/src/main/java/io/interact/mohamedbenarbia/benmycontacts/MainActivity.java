@@ -2,11 +2,14 @@ package io.interact.mohamedbenarbia.benmycontacts;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +18,8 @@ import android.widget.Toast;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.services.CacheHandlerService;
 import io.interact.mohamedbenarbia.benmycontacts.services.NewInteractionHandlerService;
+import io.interact.mohamedbenarbia.benmycontacts.services.OutgoingSmsObserver;
+import io.interact.mohamedbenarbia.benmycontacts.services.SmsInteractionListener;
 
 
 /**
@@ -50,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        //register the CacheHandler to wake up periodically in the background
         if (hasAlarmService()) {
-            Log.e(TAG_DEBUG, "Enables sensor acquisition agent");
             Intent serviceIntent = new Intent(this, CacheHandlerService.class);
             PendingIntent pIntent = PendingIntent.getService(this,
                     456,
@@ -63,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
                     SharedAttributes.TIME_MILIS_SERVICE_WAKEUP_INTERVAL,
                     pIntent);
         }
-
-
+        //register an observer to listen for outgoing sms
+        ContentResolver contentResolver = this.getContentResolver();
+        contentResolver.registerContentObserver(Uri.parse("content://sms/out"),true, new OutgoingSmsObserver(new Handler(),this));
 
     }
    // String interactionID, String t, String n, String timeStamp, String direction, String from, String to

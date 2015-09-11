@@ -3,9 +3,11 @@ package io.interact.mohamedbenarbia.benmycontacts.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.UserInteraction;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
@@ -59,7 +61,6 @@ public class NewInteractionHandlerService extends IntentService {
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isConnected()) { // connection is available
 
-                //TODO addInteractionToServer to be moved to this class
                 HttpResponse resp=  addInteractionToServer(interaction);
                 if (resp!=null && resp.getStatusLine().getStatusCode()==SharedAttributes.CREATED_RESPONSE){ // if the interaction push has succeeded
                     // get the response of the server and construct and add the interaction to the cache (the cache that is supposed to e in sync with the server)
@@ -73,14 +74,14 @@ public class NewInteractionHandlerService extends IntentService {
                         e.printStackTrace();
                     }
                 } else  { // if the interaction push has failed
-                    Log.e(LOG_TAG,"error occurred when posting to server");
+                    Log.e(LOG_TAG,"error occurred when posting to server "+resp.getStatusLine().getStatusCode());
                     //write it to the cache
                     FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED).logLine(interaction.toString());
                     Log.e(LOG_TAG, "interaction logged to cache ");
 
                 }
             } else { //if there is no connectivity simply log the interaction
-                Log.e(LOG_TAG,"error occurred when posting to server");
+                Log.e(LOG_TAG,"connectivity error occurred when posting to server");
                 //write it to the cache
                 FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED).logLine(interaction.toString());
                 Log.e(LOG_TAG, "interaction logged to cache ");
@@ -94,18 +95,21 @@ public class NewInteractionHandlerService extends IntentService {
 
     public HttpResponse addInteractionToServer(UserInteraction interac) {
 
+        //TODO fetch the trigger token
         JSONObject reqBody = interac.preparePostBody();
 
         // generate the headers
         HashMap<String,String> headers = new HashMap<>();
         headers.put(HTTP.CONTENT_TYPE, "application/json");
         headers.put("Accept", "application/json");
-        //TODO get the auth token
-        headers.put("triggerToken", "gfUH43trfdkjg34");
+        SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
+        Log.e(LOG_TAG, "token");
+        headers.put("triggerToken", "ittn_de6584e4cd174a08afa1876502f5f88b");
 
-        //TODO modify the the server
+
         // generate the url for the login service
-        String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_URI;
+        String url= SharedAttributes.BASE_URL+ SharedAttributes.INTERACTIONS_URI;
         // Post data to server and get Response
 
         HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);

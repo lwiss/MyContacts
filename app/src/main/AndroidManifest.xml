@@ -51,21 +51,24 @@
         <service
                 android:name=".services.NewInteractionHandlerService"
                 android:exported="false"/>
-        <receiver android:name=".services.InteractionsListener" >
+        <receiver
+                android:name=".services.CallInteractionsListener" >
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.NEW_INCOMING_CALL" />
-            </intent-filter>
+        </receiver>
+        <receiver
+                android:name=".services.SmsInteractionListener" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_SENT"/>
+            </intent-filter>
         </receiver>
-
 
 
     </application>

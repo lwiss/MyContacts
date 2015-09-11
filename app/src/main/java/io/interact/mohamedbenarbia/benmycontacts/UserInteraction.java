@@ -17,6 +17,7 @@ import java.util.HashMap;
  * Created by wissem on 05.09.15.
  */
 public class UserInteraction implements Comparable<UserInteraction>{
+    String LOG_TAG=UserInteraction.class.getName();
     /**
      * unique id of the interaction
      */
@@ -51,17 +52,28 @@ public class UserInteraction implements Comparable<UserInteraction>{
 
     public UserInteraction(JSONObject obj) throws JSONException {
         //get the id of the interaction
-        String interactionID=obj.getString("id");
+        String interactionID=obj.optString("id","");
         //get the type of the interaction
         String t= obj.getString("type");
-        //get the contactName (i.e the person/company with whom the interaction was established)
-        String n =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
+        //get the contactName (i.e the person/company with whom the interaction was established) make sure that such field exists and is not empty
+        String n;
+        if(null!=obj.get("contacts")) {
+            Log.e(LOG_TAG, "contact is not null");
+            if(obj.get("contacts") instanceof JSONArray && ((JSONArray)obj.get("contacts")).length()>0) {
+                Log.e(LOG_TAG, "contact is a JSONArray of size : " + ((JSONArray)obj.get("contacts")).length());
+                n=((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).optString("displayName","");
+            } else {
+                n = "";
+            }
+        } else {
+            n ="";
+        }
         //get the creation date of the interaction
         Long ts = obj.getLong("created");
         //get the direction of the interaction
         String direc = obj.getString("direction");
-        String from = obj.getString("from");
-        String to = obj.getString("to");
+        String from = obj.optString("from","");
+        String to = obj.optString("to","");
 
         this.id=interactionID;
         this.type=InteractionType.valueOf(t);

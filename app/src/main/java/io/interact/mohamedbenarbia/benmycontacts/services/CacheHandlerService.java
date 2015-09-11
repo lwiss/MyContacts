@@ -3,6 +3,7 @@ package io.interact.mohamedbenarbia.benmycontacts.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import io.interact.mohamedbenarbia.benmycontacts.UserInteraction;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
@@ -18,6 +19,7 @@ import java.util.Iterator;
  * If not the case do nothing
  */
 public class CacheHandlerService extends IntentService {
+    String LOG_TAG = CacheHandlerService.class.getName();
 
     Context context;
 
@@ -36,6 +38,7 @@ public class CacheHandlerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        Log.e(LOG_TAG,"cache handler is woken up");
         //
         try {
             //take the interactions from cache to memory and empty the cache

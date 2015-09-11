@@ -3,6 +3,7 @@ package io.interact.mohamedbenarbia.benmycontacts;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -71,12 +72,15 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
             HashMap<String,String> headers = new HashMap<>();
             headers.put(HTTP.CONTENT_TYPE, "application/json");
             headers.put("Accept", "application/json");
-            //TODO get the auth token
-            headers.put("authToken", "gfUH43trfdkjg34");
 
-            //TODO modify the the server
+            SharedPreferences setting = this.fragment.getActivity().getSharedPreferences(this.fragment.getActivity().getString(R.string.preference_file_key), this.fragment.getActivity().MODE_PRIVATE);
+
+            String token = setting.getString(String.valueOf(this.fragment.getActivity().getText(R.string.token_key)), null) ;
+            headers.put("authToken", token);
+
+
             // generate the url for the login service
-            String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
+            String url= SharedAttributes.BASE_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
             // Post data to server and get Response
 
             HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
@@ -84,7 +88,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
             try {
                 JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
                 JSONArray jsonInteractions = resBody.getJSONArray("data");
-                this.interactionsListFromServer = jsonArray2InteractionsList(jsonInteractions);
+                if (null!=jsonInteractions) {
+                    Log.e(LOG_TAG, "Server response : " + jsonInteractions.toString());
+                    this.interactionsListFromServer = jsonArray2InteractionsList(jsonInteractions);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
