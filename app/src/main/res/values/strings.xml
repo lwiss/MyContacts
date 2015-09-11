@@ -30,6 +30,13 @@
     <string name="title_activity_display_contacts">DisplayContactsActivity</string>
 
 
+    <string name="contacts_tab_tag">Contacts</string>
+
+    <string name="interactions_tab_tag">Interactions</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_contact_details">ContactDetailsActivity</string>
+
+
 
 
 </resources>

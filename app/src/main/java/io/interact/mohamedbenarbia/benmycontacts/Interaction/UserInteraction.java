@@ -1,8 +1,5 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Interaction;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

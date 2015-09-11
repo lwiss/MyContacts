@@ -1,4 +1,4 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Contacts;
 
 import android.content.Context;
 import android.text.Html;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import io.interact.mohamedbenarbia.benmycontacts.Contacts.Contact;
+import io.interact.mohamedbenarbia.benmycontacts.R;
 
 /** This is a personalized adapter for the contacts
  * Created by MohamedBenArbia on 08/09/15.
@@ -20,6 +21,8 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
     private Context context ;
     private List<Contact> contacts ;
+
+
 
 
     public ContactsAdapter(Context context, List<Contact> objects) {
@@ -53,5 +56,9 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
         return rowView;
     }
 
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
 
 }

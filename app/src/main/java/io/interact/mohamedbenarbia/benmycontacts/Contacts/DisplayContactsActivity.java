@@ -1,11 +1,12 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Contacts;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import io.interact.mohamedbenarbia.benmycontacts.R;
 
 
-
-public class DisplayContactsActivity extends AppCompatActivity {
+public class DisplayContactsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
