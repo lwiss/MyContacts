@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <uses-permission android:name="android.permission.PROCESS_INCOMING_CALLS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
         android:allowBackup="true"
@@ -48,6 +52,33 @@
             android:label="@string/title_activity_display_contacts"
             android:theme="@style/CustomActionBarTheme" >
         </activity>
+
+        <service
+                android:name=".services.CacheHandlerService"
+                android:exported="false"/>
+        <service
+                android:name=".services.NewInteractionHandlerService"
+                android:exported="false"/>
+        <receiver
+                android:name=".services.CallInteractionsListener" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
+        <receiver
+                android:name=".services.SmsInteractionListener" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_SENT"/>
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

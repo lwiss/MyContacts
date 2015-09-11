@@ -9,6 +9,7 @@ public class SharedAttributes {
 
     // Define code states sent by Server
     public static final int OK_RESPONSE = 200;
+    public static final int CREATED_RESPONSE = 201;
     public static final int NOT_FOUND__RESPONSE = 404;
     public static final int UNAUTHORIZED__RESPONSE = 401;
     public static final int NO_CONTENT = 204;
@@ -46,9 +47,13 @@ public class SharedAttributes {
      * uri for requesting the interaction list from the Interaction service
      */
     public static String INTERACTIONS_LIST_URI="interactions/list";
+    /**
+     * uri for adding a request to the server interaction list from the Interaction service
+     */
+    public static String INTERACTIONS_URI="interactions";
 
     /**
-     <<<<<<< HEAD
+
      * uri for retrieving contacts
      */
     public static String CONTACTS_URI = "contacts" ;
@@ -63,7 +68,21 @@ public class SharedAttributes {
 
     public static final String NAME_FILE_USER_INTERACTIONS = "interactions.csv";
 
+
+
+    public static final String NAME_FILE_USER_INTERACTIONS_TRIGGERED = "interactions_triggered.csv";
+    /**
+     * in ms
+     */
+    public static final int TIME_MILIS_SERVICE_STARTUP_DELAY=30*1000;
+
+    /**
+     * every 5 min
+     */
+    public static final int TIME_MILIS_SERVICE_WAKEUP_INTERVAL=5*60*1000;
+
     public static final String NAME_FILE_CONTACTS = "contacts.csv";
+
 
 
 }

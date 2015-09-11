@@ -1,13 +1,24 @@
 package io.interact.mohamedbenarbia.benmycontacts.Interaction;
 
+
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
+import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by wissem on 05.09.15.
  */
 public class UserInteraction implements Comparable<UserInteraction>{
+    String LOG_TAG=UserInteraction.class.getName();
     /**
      * unique id of the interaction
      */
@@ -33,36 +44,58 @@ public class UserInteraction implements Comparable<UserInteraction>{
      */
     private InteractionStatus status;
 
+    /**
+     * specifies email address/phone number involved in the interaction
+     */
+    private String from, to;
+
 
 
     public UserInteraction(JSONObject obj) throws JSONException {
         //get the id of the interaction
-        String interactionID=obj.getString("id");
+        String interactionID=obj.optString("id","");
         //get the type of the interaction
         String t= obj.getString("type");
-        //get the contactName (i.e the person/company with whom the interaction was established)
-        String n =((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).getString("displayName");
+        //get the contactName (i.e the person/company with whom the interaction was established) make sure that such field exists and is not empty
+        String n;
+        if(null!=obj.get("contacts")) {
+            Log.e(LOG_TAG, "contact is not null");
+            if(obj.get("contacts") instanceof JSONArray && ((JSONArray)obj.get("contacts")).length()>0) {
+                Log.e(LOG_TAG, "contact is a JSONArray of size : " + ((JSONArray)obj.get("contacts")).length());
+                n=((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).optString("displayName","");
+            } else {
+                n = "";
+            }
+        } else {
+            n ="";
+        }
         //get the creation date of the interaction
         Long ts = obj.getLong("created");
         //get the direction of the interaction
         String direc = obj.getString("direction");
+        String from = obj.optString("from","");
+        String to = obj.optString("to","");
 
         this.id=interactionID;
         this.type=InteractionType.valueOf(t);
         this.contactName=n;
         this.created=ts;
         this.direction=Direction.valueOf(direc);
+        this.from=from;
+        this.to=to;
 
     }
 
 
 
-    public UserInteraction(String interactionID, String t, String n, String timeStamp, String direction){
+    public UserInteraction(String interactionID, String t, String n, String timeStamp, String direction, String from, String to){
         this.id=interactionID;
         this.type=InteractionType.valueOf(t);
         this.contactName=n;
-        this.created=Long.getLong(timeStamp);
+        this.created=Long.parseLong(timeStamp);
         this.direction=Direction.valueOf(direction);
+        this.from=from;
+        this.to=to;
     }
 
     public String name() {
@@ -82,11 +115,34 @@ public class UserInteraction implements Comparable<UserInteraction>{
             obj.put("created",created);
             obj.put("contacts",(new JSONArray()).put(new JSONObject().put("displayName",contactName)));
             obj.put("direction",direction);
+            obj.put("from",from);
+            obj.put("to",to);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return obj.toString();
     }
+
+    /**
+     * prepares the body the the post request that will add this interaction to the server
+     * @return
+     */
+    public JSONObject preparePostBody(){
+        JSONObject res= new JSONObject();
+        try {
+            res.put("from",from);
+            res.put("type",type);
+            res.put("created",created);
+            res.put("direction",direction);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
+
+
 
     /**
      *  compares two users interactions based on their creation date

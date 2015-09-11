@@ -2,12 +2,18 @@ package io.interact.mohamedbenarbia.benmycontacts.entry;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +29,9 @@ import io.interact.mohamedbenarbia.benmycontacts.LogOutAsyncTask;
 import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.TabListener;
+import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
+import io.interact.mohamedbenarbia.benmycontacts.services.CacheHandlerService;
+import io.interact.mohamedbenarbia.benmycontacts.services.OutgoingSmsObserver;
 
 
 /**
@@ -35,6 +44,9 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
     private static final String TAG_DEBUG = "MAIN ACTIVITY";
 
     private ActionBar actionBar ;
+
+    AlarmManager mAlarmManager;
+
 
     /**
      * Load principle view otherwise lunch LoginActivity if user logged out.
@@ -83,6 +95,25 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
                 .setIcon(R.drawable.interactions_icon_off).setTabListener(new TabListener<DisplayInteractionsFragment>(
                         this, (String) getText(R.string.interactions_tab_tag), DisplayInteractionsFragment.class)) ;
         actionBar.addTab(tabInteractions);
+
+
+        if (hasAlarmService()) {
+            Intent serviceIntent = new Intent(this, CacheHandlerService.class);
+            PendingIntent pIntent = PendingIntent.getService(this,
+                    456,
+                    serviceIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + SharedAttributes.TIME_MILIS_SERVICE_STARTUP_DELAY,
+                    SharedAttributes.TIME_MILIS_SERVICE_WAKEUP_INTERVAL,
+                    pIntent);
+        }
+        //register an observer to listen for outgoing sms
+        ContentResolver contentResolver = this.getContentResolver();
+        contentResolver.registerContentObserver(Uri.parse("content://sms/out"), true, new OutgoingSmsObserver(new Handler(), this));
+
+
 
 
     }
@@ -137,5 +168,24 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
+    }
+
+
+
+    /**
+     * Verifies {@link AlarmManager} is initialized
+     *
+     * @return {@code true}, if {@link AlarmManager} is properly initialized, {@code false} otherwise
+     */
+    private boolean hasAlarmService() {
+        if (null == mAlarmManager ) {
+            mAlarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        }
+
+        if (null == mAlarmManager) {
+            Log.e(TAG_DEBUG, "Failed to get system alarm service");
+        }
+
+        return null != mAlarmManager;
     }
 }

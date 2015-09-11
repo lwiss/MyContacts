@@ -1,11 +1,15 @@
 package io.interact.mohamedbenarbia.benmycontacts.Interaction;
 
+
+
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import io.interact.mohamedbenarbia.benmycontacts.MyCustomArrayAdapter;
+import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
@@ -42,7 +46,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
     @Override
     protected void onPreExecute() {
         try {
-            this.interactionsFromCache = fromCache2InteractionList();
+            this.interactionsFromCache = fromCache2InteractionList(SharedAttributes.NAME_FILE_USER_INTERACTIONS);
+            //add the list of interaction that was triggered offline
+            ArrayList<UserInteraction> offlineInteractions=fromCache2InteractionList(SharedAttributes.NAME_FILE_USER_INTERACTIONS_TRIGGERED);
+            this.interactionsFromCache.addAll(offlineInteractions);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -65,12 +72,15 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
             HashMap<String,String> headers = new HashMap<>();
             headers.put(HTTP.CONTENT_TYPE, "application/json");
             headers.put("Accept", "application/json");
-            //TODO get the auth token
-            headers.put("authToken", "gfUH43trfdkjg34");
 
-            //TODO modify the the server
+            SharedPreferences setting = this.fragment.getActivity().getSharedPreferences(this.fragment.getActivity().getString(R.string.preference_file_key), this.fragment.getActivity().MODE_PRIVATE);
+
+            String token = setting.getString(String.valueOf(this.fragment.getActivity().getText(R.string.token_key)), null) ;
+            headers.put("authToken", token);
+
+
             // generate the url for the login service
-            String url= SharedAttributes.BASE_MOCK_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
+            String url= SharedAttributes.BASE_URL+ SharedAttributes.INTERACTIONS_LIST_URI;
             // Post data to server and get Response
 
             HttpResponse resp = NetworkUtility.postMethod(url, headers, reqBody);
@@ -78,7 +88,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
             try {
                 JSONObject resBody = new JSONObject(EntityUtils.toString(resp.getEntity()));
                 JSONArray jsonInteractions = resBody.getJSONArray("data");
-                this.interactionsListFromServer = jsonArray2InteractionsList(jsonInteractions);
+                if (null!=jsonInteractions) {
+                    Log.e(LOG_TAG, "Server response : " + jsonInteractions.toString());
+                    this.interactionsListFromServer = jsonArray2InteractionsList(jsonInteractions);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -97,9 +110,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).logList(toBeAddedtoCache);
 
 
-        //TODO in case we want ot update the interaction to the server
-        //Collection<UserInteraction> toBeAddedtoServer=new HashSet<>(interactionsFromCache);
-        //toBeAddedtoServer.removeAll(interactionsListFromServer);
+
         return toBeAddedtoCache;
     }
 
@@ -170,10 +181,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
      *  If the cache is empty or does not exist already then the returned list is empty
      * @return  list of UserInteraction that are logged in the cache, the list is empty if the cache is empty
      */
-    private ArrayList<UserInteraction> fromCache2InteractionList() throws JSONException {
+    private ArrayList<UserInteraction> fromCache2InteractionList(String fileName) throws JSONException {
 
         ArrayList<UserInteraction> res=new ArrayList<>();
-        ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(SharedAttributes.NAME_FILE_USER_INTERACTIONS).fetchStringList();
+        ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(fileName).fetchStringList();
 
         if(null != l) { // the cache already contains something
             Iterator<String> it = l.iterator();
@@ -185,6 +196,7 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         }
         return res;
     }
+
 
 
 }
