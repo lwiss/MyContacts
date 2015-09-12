@@ -5,6 +5,20 @@
 
 
 
+    <TextView
+        android:id="@+id/interactionDate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:background="@drawable/contact_display"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"
+
+        />
+
 
     <ImageView
         android:id="@+id/interactionDirection"
@@ -12,6 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:padding="5dp"
+        android:layout_below="@id/interactionDate"
+
 
 
         />
@@ -21,10 +37,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:padding="5dp"
-
         android:layout_toRightOf="@+id/interactionDirection"
+        android:layout_below="@id/interactionDate"
+
 
         />
+
+
+
 
     <TextView
         android:id="@+id/interactionName"
@@ -34,7 +54,10 @@
         android:padding="5dp"
         android:layout_margin="5dp"
         android:layout_toRightOf="@id/interactionType"
+        android:layout_below="@id/interactionDate"
+
         />
+
 
 
 
@@ -46,8 +69,8 @@
         android:textSize="15dp"
         android:padding="5dp"
         android:layout_margin="5dp"
-
         android:layout_alignParentEnd="true"
+        android:layout_below="@id/interactionDate"
         />
 
 

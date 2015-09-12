@@ -21,7 +21,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
     private Context context ;
     private List<Contact> contacts ;
-    private String previous = "" ;
+
 
 
 
@@ -29,7 +29,6 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
         super(context, -1, objects);
         this.contacts = objects;
         this.context = context ;
-        this.previous = "-1";
 
     }
 
@@ -56,16 +55,21 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
             textView.setText(displayName);
         }
 
+        String firstLetterPrevious= "-1" ;
+        // Get the first letter of the  display name of the previous Contact  ;
+        if(position!=0) {
+          firstLetterPrevious =  String.valueOf(contacts.get(position-1).getDisplayName().charAt(0)).toUpperCase() ;
+
+        }
+
         // Check if we should put the first Letter
 
         String firstLetter = String.valueOf(displayName.charAt(0)).toUpperCase();
-        if(!firstLetter.equals(this.previous)) {
+
+        if(!firstLetter.equals(firstLetterPrevious)) {
             TextView firstLetterView = (TextView) rowView.findViewById(R.id.firstLetter);
             firstLetterView.setText(firstLetter);
             firstLetterView.setVisibility(View.VISIBLE);
-
-            this.previous = firstLetter ;
-
 
         }
 
@@ -77,8 +81,5 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
         return contacts;
     }
 
-    public void setPrevious(String previous) {
-        this.previous = previous;
-    }
 
 }

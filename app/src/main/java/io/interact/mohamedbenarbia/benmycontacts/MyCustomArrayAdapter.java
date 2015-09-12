@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class MyCustomArrayAdapter extends ArrayAdapter<UserInteraction> {
 
         UserInteraction interaction = this.getItem(position);
 
+
         ImageView interactionDirection = (ImageView) rowView.findViewById(R.id.interactionDirection);
         ImageView interactionType = (ImageView) rowView.findViewById(R.id.interactionType);
         String numberInvolved = "";
@@ -70,8 +72,22 @@ public class MyCustomArrayAdapter extends ArrayAdapter<UserInteraction> {
         }
 
 
+        String previousInteractionDate = "" ;
+        if(position!=0) {
+           previousInteractionDate =  getCurrentTimeStamp(this.getItem(position - 1).getCreated(), false);
+        }
+
+        String currentInteractionDate = getCurrentTimeStamp(interaction.getCreated(), false);
+
+        Log.d("INTERACTIONN", currentInteractionDate +"......"+ previousInteractionDate)  ;
+        if(!currentInteractionDate.equals(previousInteractionDate)) {
+            TextView interactionDate = (TextView) rowView.findViewById(R.id.interactionDate);
+            interactionDate.setText(currentInteractionDate);
+            interactionDate.setVisibility(View.VISIBLE);
+        }
+
         TextView interactionTime = (TextView) rowView.findViewById(R.id.interactionTime);
-        String time = getCurrentTimeStamp(interaction.getCreated());
+        String time = getCurrentTimeStamp(interaction.getCreated(), true);
         interactionTime.setText(time);
 
         TextView interactionName = (TextView) rowView.findViewById(R.id.interactionName);
@@ -88,13 +104,18 @@ public class MyCustomArrayAdapter extends ArrayAdapter<UserInteraction> {
         return rowView;
     }
 
-    public static String getCurrentTimeStamp(long timeStamp) {
+    public static String getCurrentTimeStamp(long timeStamp, boolean getTime) {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date(timeStamp);
         String strDate = sdfDate.format(now);
 
         // Get only the hour of creation
-        strDate = strDate.substring(11, 16);
+        if(getTime) {
+            strDate = strDate.substring(11, 16);
+        }
+        else {
+            strDate = strDate.substring(0,10) ;
+        }
         return strDate;
     }
 
