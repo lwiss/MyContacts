@@ -32,8 +32,6 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
 
     private final String LOG_TAG=UserInteractionsRetrieverAsyncTask.class.getName();
 
-
-    public int offset=0,limit=-1;
     public JSONObject filters;
     private DisplayInteractionsFragment fragment ;
     ArrayList<UserInteraction> interactionsFromCache= new ArrayList<>();
@@ -161,8 +159,6 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         try {
 
             // Form the body of the postRequest
-            postRequestBody.put("offset", this.offset);
-            postRequestBody.put("limit", this.limit);
             this.filters=new JSONObject();
             this.filters.put("defaultOperator","OR");
             this.filters.put("filters", new JSONArray());

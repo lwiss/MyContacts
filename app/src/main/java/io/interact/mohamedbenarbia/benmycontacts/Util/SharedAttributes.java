@@ -53,6 +53,11 @@ public class SharedAttributes {
     public static String INTERACTIONS_URI="interactions";
 
     /**
+     * gathering all devices associated with the user
+     */
+    public static String DEVICES_URI="devices";
+
+    /**
 
      * uri for retrieving contacts
      */

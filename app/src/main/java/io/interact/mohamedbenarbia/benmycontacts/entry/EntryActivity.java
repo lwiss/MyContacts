@@ -33,7 +33,7 @@ public class EntryActivity extends Activity {
                     MainActivity.class);
             startActivity(intent);
         }
-
+        (new TriggerTokenRetieverAsyncTask(this)).execute();
         this.finish();
     }
 

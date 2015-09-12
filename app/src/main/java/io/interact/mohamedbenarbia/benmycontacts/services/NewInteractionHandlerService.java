@@ -104,9 +104,9 @@ public class NewInteractionHandlerService extends IntentService {
         headers.put(HTTP.CONTENT_TYPE, "application/json");
         headers.put("Accept", "application/json");
         SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-        String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
+        String triggerToken = setting.getString("triggerToken", null) ;
         Log.e(LOG_TAG, "token");
-        headers.put("triggerToken", "ittn_e23684e24a9942148e15ec362ef6d6f3");
+        headers.put("triggerToken", triggerToken);
 
 
         // generate the url for the login service
