@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 
 import org.apache.http.HttpResponse;
@@ -19,11 +18,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import io.interact.mohamedbenarbia.benmycontacts.Contacts.Contact;
+import io.interact.mohamedbenarbia.benmycontacts.Contacts.ContactsAdapter;
+import io.interact.mohamedbenarbia.benmycontacts.Contacts.DisplayContactsFragement;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;

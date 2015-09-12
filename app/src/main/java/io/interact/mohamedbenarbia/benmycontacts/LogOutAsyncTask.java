@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
 

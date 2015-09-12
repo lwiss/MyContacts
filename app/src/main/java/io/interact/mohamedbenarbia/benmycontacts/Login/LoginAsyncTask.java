@@ -1,4 +1,4 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Login;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
+import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
 

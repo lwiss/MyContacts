@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
+import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
+
 /**
  * Created by wissem on 08.09.15.
  */

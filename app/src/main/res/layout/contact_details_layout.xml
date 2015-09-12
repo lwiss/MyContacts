@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:minHeight="1000dp"
+    android:minWidth="1000dp"
+    android:background="@color/white"
+    >
+
+
+
+    <TextView
+        android:id="@+id/contactInitials"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/contact_initilas"
+        android:layout_alignParentLeft="true"
+        android:text="MA"
+        android:textSize="40sp"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical|center_horizontal"
+
+        />
+
+    <TextView
+        android:id="@+id/contactName"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_toRightOf="@id/contactInitials"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        />
+
+
+    <TextView
+        android:id="@+id/TitlePhoneNumberListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contactInitials"
+        android:text="Title1"
+        />
+
+        <ListView
+            android:id="@+id/phoneNumbersListView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TitlePhoneNumberListView"
+            >
+
+        </ListView>
+
+
+
+
+    <TextView
+        android:id="@+id/TitleEmailListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phoneNumbersListView"
+        android:text="Title2"
+        />
+        <ListView
+            android:id="@+id/emailsListView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TitleEmailListView"
+
+            >
+
+        </ListView>
+
+        <!-->
+    <TextView
+        android:id="@+id/emails"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contactInitials"
+        android:drawableRight="@drawable/phone_icon"
+        android:text="Soulaaam"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:hint="Test"
+        android:layout_margin="10dp"
+        />
+  <!-->
+</RelativeLayout>

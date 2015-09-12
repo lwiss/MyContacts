@@ -1,4 +1,4 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Interaction;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.interact.mohamedbenarbia.benmycontacts.R;
 
 /**
  * Created by wissem on 06.09.15.

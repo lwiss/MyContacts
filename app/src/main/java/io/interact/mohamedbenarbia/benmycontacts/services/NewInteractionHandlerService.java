@@ -7,8 +7,9 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
 import io.interact.mohamedbenarbia.benmycontacts.R;
-import io.interact.mohamedbenarbia.benmycontacts.UserInteraction;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;

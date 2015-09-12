@@ -1,4 +1,4 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Login;
 
 
 import android.net.ConnectivityManager;
@@ -10,6 +10,8 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import io.interact.mohamedbenarbia.benmycontacts.R;
 
 
 /**

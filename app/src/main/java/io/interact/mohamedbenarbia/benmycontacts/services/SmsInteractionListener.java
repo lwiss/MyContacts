@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.Log;
 import android.widget.Toast;
-import io.interact.mohamedbenarbia.benmycontacts.UserInteraction;
+
+import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
 
 /**
  * tracks only incoming sms

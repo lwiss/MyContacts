@@ -4,7 +4,8 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import io.interact.mohamedbenarbia.benmycontacts.UserInteraction;
+
+import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import org.json.JSONException;

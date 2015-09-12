@@ -1,15 +1,15 @@
-package io.interact.mohamedbenarbia.benmycontacts;
+package io.interact.mohamedbenarbia.benmycontacts.Interaction;
 
-import android.app.Activity;
-import android.app.ListActivity;
-import android.content.Intent;
+
+
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import android.widget.ArrayAdapter;
+import io.interact.mohamedbenarbia.benmycontacts.MyCustomArrayAdapter;
+import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;

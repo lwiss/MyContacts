@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +51,7 @@ public class Contact implements Comparator<Contact> {
     public Contact() {
         super();
     }
+
 
     public enum Type {
         COMPANY, PERSON
@@ -278,5 +281,73 @@ public class Contact implements Comparator<Contact> {
 
     }
 
+
+    /**
+     *
+     * @return Initials of the contact name
+     */
+    public String getContactInitials() {
+        String initials = "" ;
+
+        if(this.type.equals(Type.COMPANY)){
+            initials =  String.valueOf(this.displayName.charAt(0)) ;
+        }
+        else if (this.type.equals(Type.PERSON)) {
+            if(!this.firstName.isEmpty() && !this.lastName.isEmpty()) {
+                initials = String.valueOf(this.firstName.charAt(0)).toUpperCase()+String.valueOf(this.lastName.charAt(0)).toUpperCase();
+            }else {
+                initials= String.valueOf(this.displayName.charAt(0)) ;
+            }
+        }
+
+        return initials ;
+    }
+
+
+    /**
+     *
+     * @return List of JsonObjects forming the phone Numbers JSON Array
+     */
+    public List<JSONObject> getPhoneNumbersList() {
+        List<JSONObject> listphoneNumbersJSON = new ArrayList<>();
+
+
+        if(this.phoneNumbers!=null) {
+            for (int i = 0; i < this.phoneNumbers.length(); i++) {
+                try {
+                    listphoneNumbersJSON.add(this.phoneNumbers.getJSONObject(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+        return  listphoneNumbersJSON ;
+    }
+
+
+
+    /**
+     *
+     * @return List of JsonObjects forming the phone Numbers JSON Array
+     */
+    public List<JSONObject> getEmailList() {
+        List<JSONObject> emailsJSON = new ArrayList<>();
+
+
+        if(this.emails!=null) {
+            for (int i = 0; i < this.emails.length(); i++) {
+                try {
+                    emailsJSON.add(this.emails.getJSONObject(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+        return  emailsJSON ;
+    }
 
 }
