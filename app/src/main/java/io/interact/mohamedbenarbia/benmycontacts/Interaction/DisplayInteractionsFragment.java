@@ -4,7 +4,7 @@ import android.app.ListFragment;
 import android.os.Bundle;
 
 /**
- * Created by wissem on 08.09.15.
+ * Fragment that handel user's interaction.
  */
 public class DisplayInteractionsFragment extends ListFragment {
 

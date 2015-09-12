@@ -13,25 +13,22 @@ import java.util.List;
 import io.interact.mohamedbenarbia.benmycontacts.Contacts.Contact;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 
-/** This is a personalized adapter for the contacts
- * Created by MohamedBenArbia on 08/09/15.
+/**
+ * This is a personalized adapter for the contacts
  */
-public class ContactsAdapter extends ArrayAdapter<Contact>{
+public class ContactsAdapter extends ArrayAdapter<Contact> {
 
 
-    private Context context ;
-    private List<Contact> contacts ;
-
-
+    private Context context;
+    private List<Contact> contacts;
 
 
     public ContactsAdapter(Context context, List<Contact> objects) {
         super(context, -1, objects);
         this.contacts = objects;
-        this.context = context ;
+        this.context = context;
 
     }
-
 
 
     @Override
@@ -42,23 +39,23 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
         TextView textView = (TextView) rowView.findViewById(R.id.contactDisplayName);
 
 
-        String firstName =  contacts.get(position).getFirstName();
+        String firstName = contacts.get(position).getFirstName();
         String lastName = contacts.get(position).getLastName();
-        String displayName = contacts.get(position).getDisplayName() ;
+        String displayName = contacts.get(position).getDisplayName();
 
 
-        if((firstName!=null && lastName!=null) && (!firstName.isEmpty() || !lastName.isEmpty())) {
-            String sourceString =   firstName  + "<b>" + " "+lastName+ "</b> ";
+        if ((firstName != null && lastName != null) && (!firstName.isEmpty() || !lastName.isEmpty())) {
+            String sourceString = firstName + "<b>" + " " + lastName + "</b> ";
             textView.setText(Html.fromHtml(sourceString));
 
-        }else {
+        } else {
             textView.setText(displayName);
         }
 
-        String firstLetterPrevious= "-1" ;
+        String firstLetterPrevious = "-1";
         // Get the first letter of the  display name of the previous Contact  ;
-        if(position!=0) {
-          firstLetterPrevious =  String.valueOf(contacts.get(position-1).getDisplayName().charAt(0)).toUpperCase() ;
+        if (position != 0) {
+            firstLetterPrevious = String.valueOf(contacts.get(position - 1).getDisplayName().charAt(0)).toUpperCase();
 
         }
 
@@ -66,7 +63,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
         String firstLetter = String.valueOf(displayName.charAt(0)).toUpperCase();
 
-        if(!firstLetter.equals(firstLetterPrevious)) {
+        if (!firstLetter.equals(firstLetterPrevious)) {
             TextView firstLetterView = (TextView) rowView.findViewById(R.id.firstLetter);
             firstLetterView.setText(firstLetter);
             firstLetterView.setVisibility(View.VISIBLE);

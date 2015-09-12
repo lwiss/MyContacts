@@ -17,7 +17,7 @@ import java.util.List;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 
 /**
- * Created by MohamedBenArbia on 11/09/15.
+ * Adapter that links phone Number view.
  */
 public class PhoneNumberAdapter extends ArrayAdapter<JSONObject>{
 

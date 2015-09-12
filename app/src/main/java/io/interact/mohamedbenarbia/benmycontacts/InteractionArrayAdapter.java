@@ -19,15 +19,16 @@ import java.util.Date;
 
 import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
 
+
 /**
- * Created by wissem on 08.09.15.
+ *  Adpater that handles a user interaction.
  */
 
-public class MyCustomArrayAdapter extends ArrayAdapter<UserInteraction> {
+public class InteractionArrayAdapter extends ArrayAdapter<UserInteraction> {
     private final Context context;
 
 
-    public MyCustomArrayAdapter(Context context, ArrayList<UserInteraction> aList) {
+    public InteractionArrayAdapter(Context context, ArrayList<UserInteraction> aList) {
         super(context, -1, aList);
         this.context = context;
         this.sort(new InteractionComparator());

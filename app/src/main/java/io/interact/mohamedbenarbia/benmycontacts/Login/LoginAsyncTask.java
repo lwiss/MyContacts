@@ -28,7 +28,6 @@ import java.util.HashMap;
 
 /**
  * AsyncTask used to perform communication with the server to authenticate.
- * Created by MohamedBenArbia on 01/09/15.
  */
 public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 

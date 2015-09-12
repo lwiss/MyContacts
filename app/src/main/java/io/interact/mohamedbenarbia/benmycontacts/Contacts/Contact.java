@@ -14,7 +14,6 @@ import java.util.List;
 
 /**
  * Models a contact which can be a person or a company.
- * Created by MohamedBenArbia on 06/09/15.
  */
 public class Contact implements Comparator<Contact> {
 
@@ -28,7 +27,6 @@ public class Contact implements Comparator<Contact> {
     public static String ID_KEY = "id";
 
     private static String DEBUG_TAG = "Contact";
-
 
 
     @Override
@@ -143,7 +141,7 @@ public class Contact implements Comparator<Contact> {
             this.displayName = contactJsonObject.getString(Contact.DISPLAY_KEY);
 
             // Get the id of the contact
-            this.id = contactJsonObject.getString(Contact.ID_KEY) ;
+            this.id = contactJsonObject.getString(Contact.ID_KEY);
 
             JSONArray emails = null;
             JSONArray phoneNumbers = null;
@@ -176,10 +174,10 @@ public class Contact implements Comparator<Contact> {
                 }
             } else if (type.equals(Contact.Type.COMPANY)) {
                 String companyName = contactJsonObject.getString(Contact.COMPANY_NAME_KEY);
-                if(companyName!=null){
-                    this.companyName = companyName ;
-                }else{
-                    this.companyName="" ;
+                if (companyName != null) {
+                    this.companyName = companyName;
+                } else {
+                    this.companyName = "";
                 }
 
             }
@@ -188,19 +186,6 @@ public class Contact implements Comparator<Contact> {
             e.printStackTrace();
         }
 
-    }
-
-    public Contact(Type type, String companyName, JSONArray emails, JSONArray phoneNumbers, String displayName) {
-
-        this.type = type;
-
-        this.companyName = companyName;
-
-        this.emails = emails;
-        this.phoneNumbers = phoneNumbers;
-
-
-        this.displayName = displayName;
     }
 
 
@@ -232,16 +217,8 @@ public class Contact implements Comparator<Contact> {
     }
 
 
-    public JSONArray getEmails() {
-        return emails;
-    }
-
     public String getLastName() {
         return this.lastName;
-    }
-
-    public JSONArray getPhoneNumbers() {
-        return phoneNumbers;
     }
 
 
@@ -272,7 +249,7 @@ public class Contact implements Comparator<Contact> {
             contactJSON.put(EMAIL_KEY, this.emails);
             contactJSON.put(PHONE_KEY, this.phoneNumbers);
             contactJSON.put(DISPLAY_KEY, this.displayName);
-            contactJSON.put(ID_KEY, this.id) ;
+            contactJSON.put(ID_KEY, this.id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -283,36 +260,33 @@ public class Contact implements Comparator<Contact> {
 
 
     /**
-     *
      * @return Initials of the contact name
      */
     public String getContactInitials() {
-        String initials = "" ;
+        String initials = "";
 
-        if(this.type.equals(Type.COMPANY)){
-            initials =  String.valueOf(this.displayName.charAt(0)) ;
-        }
-        else if (this.type.equals(Type.PERSON)) {
-            if(!this.firstName.isEmpty() && !this.lastName.isEmpty()) {
-                initials = String.valueOf(this.firstName.charAt(0)).toUpperCase()+String.valueOf(this.lastName.charAt(0)).toUpperCase();
-            }else {
-                initials= String.valueOf(this.displayName.charAt(0)) ;
+        if (this.type.equals(Type.COMPANY)) {
+            initials = String.valueOf(this.displayName.charAt(0));
+        } else if (this.type.equals(Type.PERSON)) {
+            if (!this.firstName.isEmpty() && !this.lastName.isEmpty()) {
+                initials = String.valueOf(this.firstName.charAt(0)).toUpperCase() + String.valueOf(this.lastName.charAt(0)).toUpperCase();
+            } else {
+                initials = String.valueOf(this.displayName.charAt(0));
             }
         }
 
-        return initials ;
+        return initials;
     }
 
 
     /**
-     *
      * @return List of JsonObjects forming the phone Numbers JSON Array
      */
     public List<JSONObject> getPhoneNumbersList() {
         List<JSONObject> listphoneNumbersJSON = new ArrayList<>();
 
 
-        if(this.phoneNumbers!=null) {
+        if (this.phoneNumbers != null) {
             for (int i = 0; i < this.phoneNumbers.length(); i++) {
                 try {
                     listphoneNumbersJSON.add(this.phoneNumbers.getJSONObject(i));
@@ -323,20 +297,18 @@ public class Contact implements Comparator<Contact> {
             }
 
         }
-        return  listphoneNumbersJSON ;
+        return listphoneNumbersJSON;
     }
 
 
-
     /**
-     *
      * @return List of JsonObjects forming the phone Numbers JSON Array
      */
     public List<JSONObject> getEmailList() {
         List<JSONObject> emailsJSON = new ArrayList<>();
 
 
-        if(this.emails!=null) {
+        if (this.emails != null) {
             for (int i = 0; i < this.emails.length(); i++) {
                 try {
                     emailsJSON.add(this.emails.getJSONObject(i));
@@ -347,7 +319,7 @@ public class Contact implements Comparator<Contact> {
             }
 
         }
-        return  emailsJSON ;
+        return emailsJSON;
     }
 
 }

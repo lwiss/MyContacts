@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * this service when called tries to push the interaction to the server waits for the server response
+ * This service, when called, tries to push the interaction to the server then waits for the server response
  * If the operation has failed then it writes the interaction to the cache
  * Else it dies
  */
@@ -58,8 +58,8 @@ public class NewInteractionHandlerService extends IntentService {
         try {
             UserInteraction interaction = new UserInteraction(new JSONObject(data));
             Log.e(LOG_TAG, "received a new interaction "+interaction.toString());
-            ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = conMan.getActiveNetworkInfo();
+            ConnectivityManager connectionManager = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = connectionManager.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isConnected()) { // connection is available
 
                 HttpResponse resp=  addInteractionToServer(interaction);
@@ -94,19 +94,19 @@ public class NewInteractionHandlerService extends IntentService {
         }
     }
 
-    public HttpResponse addInteractionToServer(UserInteraction interac) {
 
-        //TODO fetch the trigger token
-        JSONObject reqBody = interac.preparePostBody();
+    public HttpResponse addInteractionToServer(UserInteraction interaction) {
+
+        JSONObject reqBody = interaction.preparePostBody();
 
         // generate the headers
         HashMap<String,String> headers = new HashMap<>();
         headers.put(HTTP.CONTENT_TYPE, "application/json");
         headers.put("Accept", "application/json");
         SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-        String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
+        String triggerToken = setting.getString("triggerToken", null) ;
         Log.e(LOG_TAG, "token");
-        headers.put("triggerToken", "ittn_e23684e24a9942148e15ec362ef6d6f3");
+        headers.put("triggerToken", triggerToken);
 
 
         // generate the url for the login service

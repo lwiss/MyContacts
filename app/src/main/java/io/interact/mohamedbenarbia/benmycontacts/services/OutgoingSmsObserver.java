@@ -12,7 +12,7 @@ import android.util.Log;
 import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
 
 /**
- * tracks only outgoing sms
+ * Tracks only outgoing sms
  */
 public class OutgoingSmsObserver extends ContentObserver {
     String LOG_TAG=OutgoingSmsObserver.class.getName();

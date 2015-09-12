@@ -32,7 +32,6 @@ public class CacheHandlerService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        //Need to instanciate the context in the oncreate method because otherwise it won't be accessible from the working thread(i.e. onHandleIntent )
         context=this;
     }
 

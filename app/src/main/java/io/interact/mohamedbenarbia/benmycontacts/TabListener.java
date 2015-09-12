@@ -7,7 +7,7 @@ import android.app.FragmentTransaction;
 import android.util.Log;
 
 /**
- * Created by MohamedBenArbia on 09/09/15.
+ *  Listens to tab actions.
  */
 public class TabListener< T extends Fragment> implements ActionBar.TabListener {
 

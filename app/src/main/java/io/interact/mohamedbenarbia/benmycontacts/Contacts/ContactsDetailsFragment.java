@@ -21,20 +21,18 @@ import io.interact.mohamedbenarbia.benmycontacts.FetchContactsAsyncTask;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 
 /**
- * Created by MohamedBenArbia on 10/09/15.
+ * Fragment that shows Contact details. i.e: name,  phone numbers, emails
  */
 public class ContactsDetailsFragment extends Fragment {
 
 
-
-
-    private Contact contact ;
+    private Contact contact;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Fragment Details", "On create method of Contacts details fragment") ;
+        Log.d("Fragment Details", "On create method of Contacts details fragment");
 
 
     }
@@ -43,14 +41,14 @@ public class ContactsDetailsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().getActionBar().hide();
-        Log.d("Fragment Details", "On activity created method of Contacts details fragment") ;
+        Log.d("Fragment Details", "On activity created method of Contacts details fragment");
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("Fragment Details", "On  resume method of Contacts details fragment") ;
+        Log.d("Fragment Details", "On  resume method of Contacts details fragment");
         getActivity().getActionBar().hide();
     }
 
@@ -70,19 +68,19 @@ public class ContactsDetailsFragment extends Fragment {
         View detailsView = inflater.inflate(R.layout.contact_details_layout, container, false);
 
         // Set the initials text view
-        TextView contactInitials = (TextView)detailsView.findViewById(R.id.contactInitials);
+        TextView contactInitials = (TextView) detailsView.findViewById(R.id.contactInitials);
         contactInitials.setText(this.contact.getContactInitials());
 
         // Set the contact Name listView
-        TextView contactName = (TextView)detailsView.findViewById(R.id.contactName);
+        TextView contactName = (TextView) detailsView.findViewById(R.id.contactName);
         contactName.setText(this.contact.getDisplayName());
 
         // Set the phone NumbersList View
-       ListView phoneNumbersListView = (ListView) detailsView.findViewById(R.id.phoneNumbersListView);
-        List<JSONObject> listOfPhoneNumbers = this.contact.getPhoneNumbersList() ;
+        ListView phoneNumbersListView = (ListView) detailsView.findViewById(R.id.phoneNumbersListView);
+        List<JSONObject> listOfPhoneNumbers = this.contact.getPhoneNumbersList();
         phoneNumbersListView.setAdapter(new PhoneNumberAdapter(getActivity(), listOfPhoneNumbers));
-        if(!listOfPhoneNumbers.isEmpty()) {
-            TextView titleListOfContacts = (TextView)detailsView.findViewById(R.id.titlePhoneNumberListView) ;
+        if (!listOfPhoneNumbers.isEmpty()) {
+            TextView titleListOfContacts = (TextView) detailsView.findViewById(R.id.titlePhoneNumberListView);
             titleListOfContacts.setText("Phone numbers");
             titleListOfContacts.setVisibility(View.VISIBLE);
 
@@ -92,23 +90,22 @@ public class ContactsDetailsFragment extends Fragment {
 
         // Set the phone NumbersList View
         ListView emailListView = (ListView) detailsView.findViewById(R.id.emailsListView);
-        List<JSONObject> listOfEmails = this.contact.getEmailList() ;
+        List<JSONObject> listOfEmails = this.contact.getEmailList();
         emailListView.setAdapter(new EmailAdapter(getActivity(), listOfEmails));
 
-        if(!listOfEmails.isEmpty()){
-            TextView titleListOfEmails = (TextView)detailsView.findViewById(R.id.titleEmailListView) ;
+        if (!listOfEmails.isEmpty()) {
+            TextView titleListOfEmails = (TextView) detailsView.findViewById(R.id.titleEmailListView);
             titleListOfEmails.setText("Emails");
             titleListOfEmails.setVisibility(View.VISIBLE);
 
         }
 
-        return detailsView ;
+        return detailsView;
     }
 
 
-
-    public void setContact (Contact contact) {
-        this.contact = contact ;
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }
 

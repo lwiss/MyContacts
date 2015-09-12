@@ -12,6 +12,10 @@ import android.view.MenuItem;
 import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 
+/**
+ *  Starting activity of the application.
+ *  If a the user is already connected: display Main Activity. Otherwise, display LoginActivity.
+ */
 public class EntryActivity extends Activity {
 
     @Override
@@ -33,29 +37,9 @@ public class EntryActivity extends Activity {
                     MainActivity.class);
             startActivity(intent);
         }
-
+        (new TriggerTokenRetieverAsyncTask(this)).execute();
         this.finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_entry, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

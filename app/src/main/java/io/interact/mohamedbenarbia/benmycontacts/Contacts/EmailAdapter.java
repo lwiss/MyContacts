@@ -16,7 +16,7 @@ import java.util.List;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 
 /**
- * Created by MohamedBenArbia on 11/09/15.
+ * Adapter that handles email view.
  */
 public class EmailAdapter extends ArrayAdapter<JSONObject>{
 

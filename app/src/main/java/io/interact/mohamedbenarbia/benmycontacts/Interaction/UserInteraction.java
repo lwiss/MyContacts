@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * Created by wissem on 05.09.15.
+ * Describes a user interaction.
  */
 public class UserInteraction implements Comparable<UserInteraction>{
     String LOG_TAG=UserInteraction.class.getName();
@@ -55,32 +55,32 @@ public class UserInteraction implements Comparable<UserInteraction>{
         //get the id of the interaction
         String interactionID=obj.optString("id","");
         //get the type of the interaction
-        String t= obj.getString("type");
+        String type= obj.getString("type");
         //get the contactName (i.e the person/company with whom the interaction was established) make sure that such field exists and is not empty
-        String n;
+        String name;
         if(null!=obj.get("contacts")) {
             Log.e(LOG_TAG, "contact is not null");
             if(obj.get("contacts") instanceof JSONArray && ((JSONArray)obj.get("contacts")).length()>0) {
                 Log.e(LOG_TAG, "contact is a JSONArray of size : " + ((JSONArray)obj.get("contacts")).length());
-                n=((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).optString("displayName","");
+                name=((JSONObject) ((JSONArray)obj.get("contacts")).get(0)).optString("displayName","");
             } else {
-                n = "";
+                name = "";
             }
         } else {
-            n ="";
+            name ="";
         }
         //get the creation date of the interaction
-        Long ts = obj.getLong("created");
+        Long timeStamp = obj.getLong("created");
         //get the direction of the interaction
-        String direc = obj.getString("direction");
+        String direction = obj.getString("direction");
         String from = obj.optString("from","");
         String to = obj.optString("to","");
 
         this.id=interactionID;
-        this.type=InteractionType.valueOf(t);
-        this.contactName=n;
-        this.created=ts;
-        this.direction=Direction.valueOf(direc);
+        this.type=InteractionType.valueOf(type);
+        this.contactName=name;
+        this.created=timeStamp;
+        this.direction=Direction.valueOf(direction);
         this.from=from;
         this.to=to;
 
@@ -88,10 +88,10 @@ public class UserInteraction implements Comparable<UserInteraction>{
 
 
 
-    public UserInteraction(String interactionID, String t, String n, String timeStamp, String direction, String from, String to){
+    public UserInteraction(String interactionID, String type, String name, String timeStamp, String direction, String from, String to){
         this.id=interactionID;
-        this.type=InteractionType.valueOf(t);
-        this.contactName=n;
+        this.type=InteractionType.valueOf(type);
+        this.contactName=name;
         this.created=Long.parseLong(timeStamp);
         this.direction=Direction.valueOf(direction);
         this.from=from;

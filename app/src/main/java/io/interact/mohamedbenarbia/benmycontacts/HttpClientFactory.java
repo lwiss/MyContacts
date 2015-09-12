@@ -6,7 +6,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 /**
  *
  * This factory creates HttpClients. It should be used each time a httpclient is needed.
- * Created by MohamedBenArbia on 05/09/15.
  */
 public class HttpClientFactory {
 

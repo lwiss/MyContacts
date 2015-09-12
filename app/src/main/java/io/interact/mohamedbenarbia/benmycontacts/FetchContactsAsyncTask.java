@@ -30,7 +30,6 @@ import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 
 /**
  * AsyncTask used to fetch contacts from server.
- * Created by MohamedBenArbia on 05/09/15.
  */
 
 
@@ -129,8 +128,6 @@ public class FetchContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>>
 
         return listOfContactsJSONFromat;
     }
-
-
 
 
     /**

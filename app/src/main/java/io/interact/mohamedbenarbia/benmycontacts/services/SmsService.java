@@ -9,7 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 /**
- * Created by wissem on 12.09.15.
+ * Service that enables the outgoing sms observer
  */
 public class SmsService extends Service {
 

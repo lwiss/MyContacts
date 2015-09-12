@@ -58,8 +58,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void loginButtonClicked(View view) {
 
-        //TODO: Check internet connection if available and show spinner while logging in
-
         // First check if there is an internet connection. Display a Toast if there is no internet connection
 
         ConnectivityManager conMan = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);

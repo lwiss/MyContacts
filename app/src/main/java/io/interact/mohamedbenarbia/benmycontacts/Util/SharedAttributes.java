@@ -32,7 +32,7 @@ public class SharedAttributes {
      */
     public static String BASE_URL="https://api.mycontacts.io/v2/";
     /**
-     * Url of the mock web service, used for testing
+     * Url of the mock web service, used for testing purposes
      */
     public static String BASE_MOCK_URL= "https://private-anon-24dd0b27b-interactapiprod.apiary-mock.com/v2/";
     /**
@@ -51,6 +51,11 @@ public class SharedAttributes {
      * uri for adding a request to the server interaction list from the Interaction service
      */
     public static String INTERACTIONS_URI="interactions";
+
+    /**
+     * gathering all devices associated with the user
+     */
+    public static String DEVICES_URI="devices";
 
     /**
 
@@ -79,7 +84,7 @@ public class SharedAttributes {
     /**
      * every 5 min
      */
-    public static final int TIME_MILIS_SERVICE_WAKEUP_INTERVAL=5*60*1000;
+    public static final int TIME_MILIS_SERVICE_WAKEUP_INTERVAL=30*1000;
 
     public static final String NAME_FILE_CONTACTS = "contacts.csv";
 

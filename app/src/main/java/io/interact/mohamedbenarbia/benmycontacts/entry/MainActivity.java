@@ -3,40 +3,31 @@ package io.interact.mohamedbenarbia.benmycontacts.entry;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import io.interact.mohamedbenarbia.benmycontacts.Contacts.Contact;
 import io.interact.mohamedbenarbia.benmycontacts.Contacts.ContactsDetailsFragment;
 import io.interact.mohamedbenarbia.benmycontacts.Contacts.DisplayContactsFragement;
-import io.interact.mohamedbenarbia.benmycontacts.Interaction.DisplayInteractions;
 import io.interact.mohamedbenarbia.benmycontacts.Interaction.DisplayInteractionsFragment;
 import io.interact.mohamedbenarbia.benmycontacts.LogOutAsyncTask;
-import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.TabListener;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.services.CacheHandlerService;
-import io.interact.mohamedbenarbia.benmycontacts.services.OutgoingSmsObserver;
 import io.interact.mohamedbenarbia.benmycontacts.services.SmsService;
 
 
 /**
- * Entry ativity represemts the main activity wich include the principle view (Coontacts)
+ * Main activity that displays user's contacts and interactions.
  */
 
 public class MainActivity extends Activity implements DisplayContactsFragement.OnFragmentInteractionListener {
@@ -44,15 +35,16 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
 
     private static final String TAG_DEBUG = "MAIN ACTIVITY";
 
-    private ActionBar actionBar ;
+    private ActionBar actionBar;
 
-    private ActionBar.Tab tabContacts  ;
+    private ActionBar.Tab tabContacts;
 
     AlarmManager mAlarmManager;
 
 
     /**
      * Load principle view otherwise lunch LoginActivity if user logged out.
+     *
      * @param savedInstanceState
      */
     @Override
@@ -60,27 +52,10 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //actionBar.setCustomView(R.layout.main_activity_action_bar_layout);
-        //actionBar.setDisplayShowCustomEnabled(true);
-
-        // Check if a token already exists. if not lunch the loginActivity.
-        /*
-        SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-
-        String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
-
-        Log.d(TAG_DEBUG, "Token saved in shared pref: " + token) ;
-        if (token==null) {
-            Intent intent = new Intent(this,
-                    LoginActivity.class);
-            startActivity(intent);
-        }
-
-        */
         Log.d(TAG_DEBUG, "On create: setting action bar");
 
         // Customise action bar
-         actionBar = getActionBar() ;
+        actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setTitle(getText(R.string.app_name));
 
@@ -89,19 +64,16 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 
+        tabContacts = actionBar.newTab()
+                .setIcon(R.drawable.contacts_icon_off).setTabListener(new TabListener<DisplayContactsFragement>(
+                        this, (String) getText(R.string.contacts_tab_tag), DisplayContactsFragement.class));
 
-            tabContacts = actionBar.newTab()
-                    .setIcon(R.drawable.contacts_icon_off).setTabListener(new TabListener<DisplayContactsFragement>(
-                            this, (String) getText(R.string.contacts_tab_tag), DisplayContactsFragement.class));
+        actionBar.addTab(tabContacts);
 
-            actionBar.addTab(tabContacts);
-
-            ActionBar.Tab tabInteractions = actionBar.newTab()
-                    .setIcon(R.drawable.interactions_icon_off).setTabListener(new TabListener<DisplayInteractionsFragment>(
-                            this, (String) getText(R.string.interactions_tab_tag), DisplayInteractionsFragment.class));
-            actionBar.addTab(tabInteractions);
-
-
+        ActionBar.Tab tabInteractions = actionBar.newTab()
+                .setIcon(R.drawable.interactions_icon_off).setTabListener(new TabListener<DisplayInteractionsFragment>(
+                        this, (String) getText(R.string.interactions_tab_tag), DisplayInteractionsFragment.class));
+        actionBar.addTab(tabInteractions);
 
 
         if (hasAlarmService()) {
@@ -124,32 +96,6 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
 
     }
 
-    @Override
-    protected void onStart (){
-        super.onStart();
-        Log.d(TAG_DEBUG, "On start method entered");
-
-    }
-
-
-
-    @Override
-    protected void onResume (){
-        super.onResume();
-        Log.d(TAG_DEBUG, "On resume method entered");
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG_DEBUG, "On restart method entered");
-
-
-    }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,24 +105,10 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void displayActivities(View view) {
-        Intent intent = new Intent(this,
-                DisplayInteractions.class);
-        startActivity(intent);
-
-    }
-
-
-/*
-    @Override
-    public void onBackPressed() {
-
-        Log.d(TAG_DEBUG,"Back button pressed") ;
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        super.onBackPressed();
-    }
-*/
+    /**
+     *  method called when logout button pressed.
+     * @param menuItem
+     */
 
     public void logout(MenuItem menuItem) {
 
@@ -185,6 +117,10 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
 
     }
 
+    /**
+     * Called when user click on contact view handled by the DisplayContactsFragment
+     * @param contact
+     */
     @Override
     public void onFragmentInteraction(Contact contact) {
 
@@ -201,14 +137,13 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
     }
 
 
-
     /**
      * Verifies {@link AlarmManager} is initialized
      *
      * @return {@code true}, if {@link AlarmManager} is properly initialized, {@code false} otherwise
      */
     private boolean hasAlarmService() {
-        if (null == mAlarmManager ) {
+        if (null == mAlarmManager) {
             mAlarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         }
 

@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import io.interact.mohamedbenarbia.benmycontacts.MyCustomArrayAdapter;
+import io.interact.mohamedbenarbia.benmycontacts.InteractionArrayAdapter;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.Util.FileLogger;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
@@ -26,14 +26,13 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by wissem on 05.09.15.
+ * Retrieves user interactions. Handles online & offline cases.
+ * A better description of this class can be found in the attached UML file.
  */
 public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, ArrayList<UserInteraction>> {
 
     private final String LOG_TAG=UserInteractionsRetrieverAsyncTask.class.getName();
 
-
-    public int offset=0,limit=-1;
     public JSONObject filters;
     private DisplayInteractionsFragment fragment ;
     ArrayList<UserInteraction> interactionsFromCache= new ArrayList<>();
@@ -43,6 +42,9 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         this.fragment = a;
     }
 
+    /**
+     * Display user's interaction form cache.
+     */
     @Override
     protected void onPreExecute() {
         try {
@@ -53,10 +55,15 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        fragment.setListAdapter(new MyCustomArrayAdapter(fragment.getActivity(),this.interactionsFromCache));
+        fragment.setListAdapter(new InteractionArrayAdapter(fragment.getActivity(),this.interactionsFromCache));
         Log.e(LOG_TAG, "size of the cached list" + interactionsFromCache.size());
     }
 
+    /**
+     *  Synchromize & update the content of the cache with the server if  a change occurred.
+     * @param params
+     * @return
+     */
 
     @Override
     protected ArrayList<UserInteraction> doInBackground(Void... params) {
@@ -114,20 +121,24 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         return toBeAddedtoCache;
     }
 
+    /**
+     * Update the new list if any change occurred.
+     * @param toBeAddedtoCache
+     */
     @Override
     protected void onPostExecute(ArrayList<UserInteraction> toBeAddedtoCache) {
         super.onPostExecute(toBeAddedtoCache);
         Log.e(LOG_TAG, "add the elements of the list to the array adapter");
         for (UserInteraction elem :toBeAddedtoCache) {
 
-            ((MyCustomArrayAdapter) fragment.getListAdapter()).add(elem);
+            ((InteractionArrayAdapter) fragment.getListAdapter()).add(elem);
 
         }
 
     }
 
     /**
-     *  Takes the JSONArray that cames from the server and constructs the list of user's interactions
+     *  Takes the JSONArray retrieved from the server and constructs the list of user's interactions
      * @param jsonArray server response
      * @return List of UserInteraction that the server holds,
      *         if the response of the server is empty then returns an empty list
@@ -161,8 +172,6 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
         try {
 
             // Form the body of the postRequest
-            postRequestBody.put("offset", this.offset);
-            postRequestBody.put("limit", this.limit);
             this.filters=new JSONObject();
             this.filters.put("defaultOperator","OR");
             this.filters.put("filters", new JSONArray());
@@ -184,10 +193,10 @@ public class UserInteractionsRetrieverAsyncTask extends AsyncTask<Void, Void, Ar
     private ArrayList<UserInteraction> fromCache2InteractionList(String fileName) throws JSONException {
 
         ArrayList<UserInteraction> res=new ArrayList<>();
-        ArrayList < String > l = (ArrayList < String >) FileLogger.getInstance(fileName).fetchStringList();
+        ArrayList < String > list = (ArrayList < String >) FileLogger.getInstance(fileName).fetchStringList();
 
-        if(null != l) { // the cache already contains something
-            Iterator<String> it = l.iterator();
+        if(null != list) { // the cache already contains something
+            Iterator<String> it = list.iterator();
 
             while (it.hasNext()) {
                 JSONObject obj = new JSONObject(it.next());

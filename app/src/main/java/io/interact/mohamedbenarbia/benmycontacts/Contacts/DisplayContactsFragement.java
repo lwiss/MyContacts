@@ -24,10 +24,17 @@ import io.interact.mohamedbenarbia.benmycontacts.FetchContactsAsyncTask;
 public class DisplayContactsFragement extends ListFragment {
 
 
+    /**
+     *     Listener that handles the event when a contact view is clicked.
+     */
+    private OnFragmentInteractionListener mListener;
+
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        // Initialize the listener
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -39,13 +46,11 @@ public class DisplayContactsFragement extends ListFragment {
 
     }
 
-
-
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // Remove the default deviders
         getListView().setDivider(null);
         getListView().setDividerHeight(0);
         FetchContactsAsyncTask fetchContactsAsyncTask = new FetchContactsAsyncTask(this);
@@ -55,12 +60,6 @@ public class DisplayContactsFragement extends ListFragment {
     }
 
 
-
-
-
-
-    private OnFragmentInteractionListener mListener;
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -68,21 +67,13 @@ public class DisplayContactsFragement extends ListFragment {
     public DisplayContactsFragement() {
     }
 
-    /**
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-
-    }
-**/
 
 
     @Override
     public void onDetach() {
         super.onDetach();
         Log.d("Fragment", "On detach method of display contacts") ;
-
         mListener = null;
     }
 
@@ -100,15 +91,8 @@ public class DisplayContactsFragement extends ListFragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-    */
+     * Allow the interaction between fragment and parent activity
+     */
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Contact contact);
     }

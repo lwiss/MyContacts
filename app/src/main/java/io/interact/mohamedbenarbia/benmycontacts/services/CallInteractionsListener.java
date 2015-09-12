@@ -9,36 +9,10 @@ import android.util.Log;
 import io.interact.mohamedbenarbia.benmycontacts.Interaction.UserInteraction;
 
 /**
- * Created by wissem on 10.09.15.
+ * Register as a broadcast receiver service that listens in background to incoming and outgoing call events.
  */
 public class CallInteractionsListener extends BroadcastReceiver {
-    final String LOG_TAG=CallInteractionsListener.class.getName();
-
-    /*private long callStartTime;
-
-
-    public void onReceive(Context context, Intent intent) {
-        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-
-        if(state==null) {
-                //outgoing call
-            String phoneNumber=intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-
-            Log.e(LOG_TAG,"Phone number outgoing call : "+phoneNumber ) ;
-
-            UserInteraction inter = new UserInteraction("", "call", "", "" + System.currentTimeMillis(), "OUTBOUND", "",phoneNumber);
-            Intent mServiceIntent = new Intent(context, NewInteractionHandlerService.class);
-            mServiceIntent.putExtra("interaction",inter.toString());
-            context.startService(mServiceIntent);
-        }else if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
-                //incoming call
-            String phoneNumber=intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            UserInteraction inter = new UserInteraction("", "call", "", "" + System.currentTimeMillis(), "INBOUND",phoneNumber,"");
-            Intent mServiceIntent = new Intent(context, NewInteractionHandlerService.class);
-            mServiceIntent.putExtra("interaction",inter.toString());
-            context.startService(mServiceIntent);
-        }
-    }*/
+    final String LOG_TAG = CallInteractionsListener.class.getName();
 
     //The receiver will be recreated whenever android feels like it.  We need a static variable to remember data between instantiations
 
@@ -54,18 +28,15 @@ public class CallInteractionsListener extends BroadcastReceiver {
         //We listen to two intents.  The new outgoing call only tells us of an outgoing call.  We use it to get the number.
         if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
             savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
-        }
-        else{
+        } else {
             String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
             String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
             int state = 0;
-            if(stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)){
+            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 state = TelephonyManager.CALL_STATE_IDLE;
-            }
-            else if(stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                 state = TelephonyManager.CALL_STATE_OFFHOOK;
-            }
-            else if(stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)){
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 state = TelephonyManager.CALL_STATE_RINGING;
             }
 
@@ -75,17 +46,18 @@ public class CallInteractionsListener extends BroadcastReceiver {
     }
 
 
-    protected void onIncomingCallStarted(Context ctx, String number, long start){
-        UserInteraction inter = new UserInteraction("", "call", "", "" + start, "INBOUND",number,"");
+    protected void onIncomingCallStarted(Context ctx, String number, long start) {
+        UserInteraction interaction = new UserInteraction("", "call", "", "" + start, "INBOUND", number, "");
         Intent mServiceIntent = new Intent(ctx, NewInteractionHandlerService.class);
-        mServiceIntent.putExtra("interaction",inter.toString());
+        mServiceIntent.putExtra("interaction", interaction.toString());
         ctx.startService(mServiceIntent);
 
     }
-    protected void onOutgoingCallStarted(Context ctx, String number, long start){
-        UserInteraction inter = new UserInteraction("", "call", "", "" + start, "OUTBOUND", "",number);
+
+    protected void onOutgoingCallStarted(Context ctx, String number, long start) {
+        UserInteraction interaction = new UserInteraction("", "call", "", "" + start, "OUTBOUND", "", number);
         Intent mServiceIntent = new Intent(ctx, NewInteractionHandlerService.class);
-        mServiceIntent.putExtra("interaction",inter.toString());
+        mServiceIntent.putExtra("interaction", interaction.toString());
         ctx.startService(mServiceIntent);
     }
 
@@ -94,7 +66,7 @@ public class CallInteractionsListener extends BroadcastReceiver {
     //Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
     //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
     public void onCallStateChanged(Context context, int state, String number) {
-        if(lastState == state){
+        if (lastState == state) {
             //No change, debounce extras
             return;
         }
@@ -107,7 +79,7 @@ public class CallInteractionsListener extends BroadcastReceiver {
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
-                if(lastState != TelephonyManager.CALL_STATE_RINGING){
+                if (lastState != TelephonyManager.CALL_STATE_RINGING) {
                     isIncoming = false;
                     callStartTime = System.currentTimeMillis();
                     onOutgoingCallStarted(context, savedNumber, callStartTime);
@@ -115,15 +87,13 @@ public class CallInteractionsListener extends BroadcastReceiver {
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 //Went to idle-  this is the end of a call.  What type depends on previous state(s)
-                if(lastState == TelephonyManager.CALL_STATE_RINGING){
+                if (lastState == TelephonyManager.CALL_STATE_RINGING) {
                     //Ring but no pickup-  a miss
                     //onMissedCall(context, savedNumber, callStartTime);
-                }
-                else if(isIncoming){
+                } else if (isIncoming) {
                     //onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
-                }
-                else{
-                   // onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
+                } else {
+                    // onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
                 }
                 break;
         }
