@@ -6,13 +6,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
-    <uses-permission android:name="android.permission.PROCESS_INCOMING_CALLS"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.PROCESS_INCOMING_CALLS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
@@ -41,26 +40,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/CustomActionBarTheme" >
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Contacts.DisplayContactsActivity"
             android:label="@string/title_activity_display_contacts"
-            android:theme="@style/CustomActionBarTheme" >
+            android:screenOrientation="portrait"
+             >
         </activity>
 
         <service
-                android:name=".services.CacheHandlerService"
-                android:exported="false"/>
+            android:name=".services.CacheHandlerService"
+            android:exported="false" />
         <service
-                android:name=".services.NewInteractionHandlerService"
-                android:exported="false"/>
-        <receiver
-                android:name=".services.CallInteractionsListener" >
+            android:name=".services.NewInteractionHandlerService"
+            android:exported="false" />
+
+        <receiver android:name=".services.CallInteractionsListener" >
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -68,17 +64,26 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
-        <receiver
-                android:name=".services.SmsInteractionListener" >
+        <receiver android:name=".services.SmsInteractionListener" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_SENT"/>
+                <action android:name="android.provider.Telephony.SMS_SENT" />
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".entry.EntryActivity"
+            android:label="@string/title_activity_entry"
+            android:theme="@style/AppThemeNoActionBar">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -45,6 +45,8 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
 
     private ActionBar actionBar ;
 
+    private ActionBar.Tab tabContacts  ;
+
     AlarmManager mAlarmManager;
 
 
@@ -61,6 +63,7 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         //actionBar.setDisplayShowCustomEnabled(true);
 
         // Check if a token already exists. if not lunch the loginActivity.
+        /*
         SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
         String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
@@ -72,6 +75,8 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
             startActivity(intent);
         }
 
+        */
+        Log.d(TAG_DEBUG, "On create: setting action bar");
 
         // Customise action bar
          actionBar = getActionBar() ;
@@ -83,18 +88,19 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 
-        Log.d(TAG_DEBUG, "On created entered");
 
-        ActionBar.Tab tabContacts = actionBar.newTab()
-                .setIcon(R.drawable.contacts_icon_off).setTabListener(new TabListener<DisplayContactsFragement>(
-                        this, (String) getText(R.string.contacts_tab_tag), DisplayContactsFragement.class)) ;
+            tabContacts = actionBar.newTab()
+                    .setIcon(R.drawable.contacts_icon_off).setTabListener(new TabListener<DisplayContactsFragement>(
+                            this, (String) getText(R.string.contacts_tab_tag), DisplayContactsFragement.class));
 
-        actionBar.addTab(tabContacts);
+            actionBar.addTab(tabContacts);
 
-        ActionBar.Tab tabInteractions = actionBar.newTab()
-                .setIcon(R.drawable.interactions_icon_off).setTabListener(new TabListener<DisplayInteractionsFragment>(
-                        this, (String) getText(R.string.interactions_tab_tag), DisplayInteractionsFragment.class)) ;
-        actionBar.addTab(tabInteractions);
+            ActionBar.Tab tabInteractions = actionBar.newTab()
+                    .setIcon(R.drawable.interactions_icon_off).setTabListener(new TabListener<DisplayInteractionsFragment>(
+                            this, (String) getText(R.string.interactions_tab_tag), DisplayInteractionsFragment.class));
+            actionBar.addTab(tabInteractions);
+
+
 
 
         if (hasAlarmService()) {
@@ -114,6 +120,30 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
         contentResolver.registerContentObserver(Uri.parse("content://sms/out"), true, new OutgoingSmsObserver(new Handler(), this));
 
 
+
+
+    }
+
+    @Override
+    protected void onStart (){
+        super.onStart();
+        Log.d(TAG_DEBUG, "On start method entered");
+
+    }
+
+
+
+    @Override
+    protected void onResume (){
+        super.onResume();
+        Log.d(TAG_DEBUG, "On resume method entered");
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG_DEBUG, "On restart method entered");
 
 
     }

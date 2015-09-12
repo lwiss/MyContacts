@@ -2,6 +2,7 @@ package io.interact.mohamedbenarbia.benmycontacts.Login;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -12,6 +13,7 @@ import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
 import io.interact.mohamedbenarbia.benmycontacts.R;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
+import io.interact.mohamedbenarbia.benmycontacts.entry.MainActivity;
 
 import org.apache.http.HttpResponse;
 ;
@@ -226,6 +228,9 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, Integer> {
 
                 Toast.makeText(context, context.getText(R.string.login_success_message), Toast.LENGTH_LONG).show();
                 // In case of successful log in: dismiss login activity
+                Intent intent = new Intent(context,
+                        MainActivity.class);
+                context.startActivity(intent);
                 ((LoginActivity)context).finish();
                 break ;
 

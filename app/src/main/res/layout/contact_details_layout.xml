@@ -14,8 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/contact_initilas"
         android:layout_alignParentLeft="true"
-        android:text="MA"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:textColor="@color/white"
         android:padding="10dp"
         android:layout_margin="10dp"
@@ -36,18 +35,26 @@
 
 
     <TextView
-        android:id="@+id/TitlePhoneNumberListView"
+        android:id="@+id/titlePhoneNumberListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/contactInitials"
-        android:text="Title1"
+        android:padding="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="2dp"
+        android:textSize="15dp"
+        android:background="@color/gray2"
+        android:visibility="invisible"
+
         />
 
         <ListView
             android:id="@+id/phoneNumbersListView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/TitlePhoneNumberListView"
+            android:layout_below="@id/titlePhoneNumberListView"
             >
 
         </ListView>
@@ -56,17 +63,21 @@
 
 
     <TextView
-        android:id="@+id/TitleEmailListView"
+        android:id="@+id/titleEmailListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/phoneNumbersListView"
-        android:text="Title2"
+        android:padding="10dp"
+        android:layout_margin="2dp"
+        android:textSize="15dp"
+        android:background="@color/gray2"
+        android:visibility="invisible"
         />
         <ListView
             android:id="@+id/emailsListView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/TitleEmailListView"
+            android:layout_below="@id/titleEmailListView"
 
             >
 

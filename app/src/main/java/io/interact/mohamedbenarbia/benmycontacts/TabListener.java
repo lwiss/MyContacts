@@ -18,6 +18,8 @@ public class TabListener< T extends Fragment> implements ActionBar.TabListener {
     private final String mTag;
     private final Class<T> mClass;
 
+
+
     /** Constructor used each time a new tab is created.
      * @param activity  The host Activity, used to instantiate the fragment
      * @param tag  The identifier tag for the fragment
@@ -36,16 +38,17 @@ public class TabListener< T extends Fragment> implements ActionBar.TabListener {
         if (mFragment == null) {
             // If not, instantiate and add it to the activity
             mFragment = Fragment.instantiate(mActivity, mClass.getName());
-            Log.d(LogTag,"Adding fragment") ;
+            Log.d("Fragment", "Adding fragment"+ mFragment.getTag() +"in Tab") ;
+
             ft.add(android.R.id.content, mFragment, mTag);
         } else {
             // If it exists, simply attach it in order to show it
-            Log.d(LogTag,"attaching fragment") ;
+            Log.d("Fragment", "Attaching fragment"+ mFragment.getTag() +"in Tab") ;
+
 
             ft.attach(mFragment);
+
         }
-
-
 
 
         if(this.mTag.equals(mActivity.getText(R.string.contacts_tab_tag))) {

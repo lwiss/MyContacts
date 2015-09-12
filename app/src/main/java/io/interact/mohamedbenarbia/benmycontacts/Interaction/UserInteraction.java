@@ -201,4 +201,13 @@ public class UserInteraction implements Comparable<UserInteraction>{
         CONNECTED, BUSY, NOT_ANSWERED, VOICE_MAIL, UNKNOWN, MISSED
     }
 
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
 }

@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -25,14 +26,31 @@ public class DisplayContactsFragement extends ListFragment {
 
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
+        Log.d("Fragment", "On Attach method of display contacts") ;
+
+    }
+
+
+
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
 
         getListView().setDivider(null);
         getListView().setDividerHeight(0);
         FetchContactsAsyncTask fetchContactsAsyncTask = new FetchContactsAsyncTask(this);
         fetchContactsAsyncTask.execute();
+        Log.d("Fragment", "On createActivity method of display contacts") ;
 
     }
 
@@ -59,20 +77,12 @@ public class DisplayContactsFragement extends ListFragment {
     }
 **/
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d("Fragment", "On detach method of display contacts") ;
+
         mListener = null;
     }
 

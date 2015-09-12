@@ -35,6 +35,7 @@
     <string name="interactions_tab_tag">Interactions</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_contact_details">ContactDetailsActivity</string>
+    <string name="title_activity_entry">EntryActivity</string>
 
 
 

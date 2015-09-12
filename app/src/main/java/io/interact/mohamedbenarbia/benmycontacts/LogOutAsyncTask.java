@@ -12,6 +12,7 @@ import android.widget.Toast;
 import io.interact.mohamedbenarbia.benmycontacts.Login.LoginActivity;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.Util.NetworkUtility;
+import io.interact.mohamedbenarbia.benmycontacts.entry.MainActivity;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HTTP;
@@ -158,6 +159,7 @@ public class LogOutAsyncTask extends AsyncTask<Void, Void, Integer> {
         Intent intent = new Intent(this.context,
                 LoginActivity.class);
         this.context.startActivity(intent);
+        ((MainActivity)context).finish();
 
     }
 }

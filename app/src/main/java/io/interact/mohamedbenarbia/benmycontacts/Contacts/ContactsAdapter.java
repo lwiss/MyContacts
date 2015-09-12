@@ -21,7 +21,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
     private Context context ;
     private List<Contact> contacts ;
-
+    private String previous = "" ;
 
 
 
@@ -29,6 +29,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
         super(context, -1, objects);
         this.contacts = objects;
         this.context = context ;
+        this.previous = "-1";
 
     }
 
@@ -44,13 +45,28 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
         String firstName =  contacts.get(position).getFirstName();
         String lastName = contacts.get(position).getLastName();
+        String displayName = contacts.get(position).getDisplayName() ;
+
 
         if((firstName!=null && lastName!=null) && (!firstName.isEmpty() || !lastName.isEmpty())) {
             String sourceString =   firstName  + "<b>" + " "+lastName+ "</b> ";
             textView.setText(Html.fromHtml(sourceString));
+
         }else {
-            String sourceString = contacts.get(position).getDisplayName() ;
-            textView.setText(sourceString);
+            textView.setText(displayName);
+        }
+
+        // Check if we should put the first Letter
+
+        String firstLetter = String.valueOf(displayName.charAt(0)).toUpperCase();
+        if(!firstLetter.equals(this.previous)) {
+            TextView firstLetterView = (TextView) rowView.findViewById(R.id.firstLetter);
+            firstLetterView.setText(firstLetter);
+            firstLetterView.setVisibility(View.VISIBLE);
+
+            this.previous = firstLetter ;
+
+
         }
 
         return rowView;
@@ -59,6 +75,10 @@ public class ContactsAdapter extends ArrayAdapter<Contact>{
 
     public List<Contact> getContacts() {
         return contacts;
+    }
+
+    public void setPrevious(String previous) {
+        this.previous = previous;
     }
 
 }
