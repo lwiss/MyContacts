@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.PROCESS_INCOMING_CALLS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:allowBackup="true"
@@ -50,8 +51,12 @@
         </activity>
 
         <service
-            android:name=".services.CacheHandlerService"
-            android:exported="false" />
+                android:name=".services.SmsService" >
+        </service>
+        <service
+                android:name=".services.CacheHandlerService"
+                android:exported="false"/>
+
         <service
             android:name=".services.NewInteractionHandlerService"
             android:exported="false" />
