@@ -4,7 +4,10 @@
     <facet type="java-gradle" name="Java-Gradle">
       <configuration>
         <option name="BUILD_FOLDER_PATH" value="$MODULE_DIR$/build" />
+<<<<<<< HEAD
         <option name="BUILDABLE" value="false" />
+=======
+>>>>>>> 77f5a9e2232d3e914df31961e534628877aae1fd
       </configuration>
     </facet>
   </component>

@@ -20,7 +20,11 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
+<<<<<<< HEAD
  * Retrieves trigger token used for posting a new interaction to the server.s
+=======
+ * Created by wissem on 12.09.15.
+>>>>>>> 77f5a9e2232d3e914df31961e534628877aae1fd
  */
 public class TriggerTokenRetieverAsyncTask extends AsyncTask <Void ,Void, Void>{
     String LOG_TAG=TriggerTokenRetieverAsyncTask.class.getName();
@@ -51,12 +55,13 @@ public class TriggerTokenRetieverAsyncTask extends AsyncTask <Void ,Void, Void>{
             headers.put("authToken", token);
 
 
-            // generate the url for the device list service
+
             String url= SharedAttributes.BASE_URL+ SharedAttributes.DEVICES_URI;
             // Post data to server and get Response
 
             HttpResponse resp = NetworkUtility.getMethod(url,headers);
             if (resp!=null && resp.getStatusLine().getStatusCode()==SharedAttributes.OK_RESPONSE) {
+
                 try {
                     JSONArray resBody = new JSONArray(EntityUtils.toString(resp.getEntity()));
                     for(int i=0;i<resBody.length();i++) {
