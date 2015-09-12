@@ -32,6 +32,7 @@ import io.interact.mohamedbenarbia.benmycontacts.TabListener;
 import io.interact.mohamedbenarbia.benmycontacts.Util.SharedAttributes;
 import io.interact.mohamedbenarbia.benmycontacts.services.CacheHandlerService;
 import io.interact.mohamedbenarbia.benmycontacts.services.OutgoingSmsObserver;
+import io.interact.mohamedbenarbia.benmycontacts.services.SmsService;
 
 
 /**
@@ -109,11 +110,10 @@ public class MainActivity extends Activity implements DisplayContactsFragement.O
                     SharedAttributes.TIME_MILIS_SERVICE_WAKEUP_INTERVAL,
                     pIntent);
         }
-        //register an observer to listen for outgoing sms
-        ContentResolver contentResolver = this.getContentResolver();
-        contentResolver.registerContentObserver(Uri.parse("content://sms/out"), true, new OutgoingSmsObserver(new Handler(), this));
+        //start the service that will launch the contentObserver watching the outgoing sms
 
-
+        Intent intent = new Intent(this, SmsService.class);
+        startService(intent);
 
 
     }

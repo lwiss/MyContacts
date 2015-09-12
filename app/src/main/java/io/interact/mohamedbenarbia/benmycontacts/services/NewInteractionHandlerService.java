@@ -52,12 +52,12 @@ public class NewInteractionHandlerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Log.e(LOG_TAG, "received a new interaction ");
+
 
         String data = intent.getStringExtra("interaction");
         try {
             UserInteraction interaction = new UserInteraction(new JSONObject(data));
-
+            Log.e(LOG_TAG, "received a new interaction "+interaction.toString());
             ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isConnected()) { // connection is available
@@ -106,7 +106,7 @@ public class NewInteractionHandlerService extends IntentService {
         SharedPreferences setting = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         String token = setting.getString(String.valueOf(getText(R.string.token_key)), null) ;
         Log.e(LOG_TAG, "token");
-        headers.put("triggerToken", "ittn_de6584e4cd174a08afa1876502f5f88b");
+        headers.put("triggerToken", "ittn_e23684e24a9942148e15ec362ef6d6f3");
 
 
         // generate the url for the login service

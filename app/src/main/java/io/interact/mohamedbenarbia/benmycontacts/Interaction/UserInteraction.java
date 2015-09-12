@@ -130,6 +130,7 @@ public class UserInteraction implements Comparable<UserInteraction>{
     public JSONObject preparePostBody(){
         JSONObject res= new JSONObject();
         try {
+            res.put("to",to);
             res.put("from",from);
             res.put("type",type);
             res.put("created",created);
