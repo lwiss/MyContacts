@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
-<<<<<<< HEAD
+
  * Retrieves trigger token used for posting a new interaction to the server.s
-=======
- * Created by wissem on 12.09.15.
->>>>>>> 77f5a9e2232d3e914df31961e534628877aae1fd
+
  */
 public class TriggerTokenRetieverAsyncTask extends AsyncTask <Void ,Void, Void>{
     String LOG_TAG=TriggerTokenRetieverAsyncTask.class.getName();
